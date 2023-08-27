@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sauce Framework</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet">
+</head>
+
+<body>
+
+<dir id="root">
+    <h4>Welcome to Sauce Framework</h4>
+
+    <p>Request:</p>
+    <ul>
+        <li><strong>RemoteAddr</strong>: {{ .RemoteAddr }}</li>
+        <li><strong>RequestURI</strong>: {{ .RequestURI }}</li>
+        <li><strong>Method</strong>: {{ .Method }}</li>
+        <li><strong>Proto</strong>: {{ .Proto }}</li>
+        <li><strong>Host</strong>: {{ .Host }}</li>
+    </ul>
+
+    <p>Form:</p>
+    <ul>
+    {{ range $key, $value := .Form }}
+       <li><strong>{{ $key }}</strong>: {{ $value }}</li>
+    {{ end }}
+    </ul>
+
+    <p>Headers:</p>
+    <ul>
+    {{ range $key, $value := .Header }}
+       <li><strong>{{ $key }}</strong>: {{ $value }}</li>
+    {{ end }}
+    </ul>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+application:
+  package: "github.com/sprintframework/sprintframework"
+  company: "CodeAllergy"
+  copyright: "Copyright (c) 2022 Zander Schwid & Co. LLC. All rights reserved."
+  nat: "no"
+  bootstrap-tokens: "boot"
+
+secure-storage:
+  split-key-value: false
+
+control-grpc-server:
+  listen-address: ":8444"
+
+control-gateway-server:
+  listen-address: ":8443"
+  options: "gateway;pages;assets;gzip"
+
+redirect-https:
+  listen-address: ":8080"
+  redirect-address: ":8443"
+  options: "pages"
+
+lumberjack:
+  rotate-on-start: true
+
+tls-config:
+  insecure: true

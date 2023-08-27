@@ -1,0 +1,15 @@
+# Copyright (c) Zander Schwid & Co. LLC.
+# SPDX-License-Identifier: BUSL-1.1
+
+FROM codeallergy/ubuntu-golang as builder
+
+ARG VERSION
+ARG BUILD
+
+WORKDIR /go/src/github.com/sprintframework/sprintframework
+ADD . .
+
+RUN go build -o /sprint -v -ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}"
+
+CMD ["cat", "/sprint"]
+
