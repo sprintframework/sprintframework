@@ -23,9 +23,9 @@ import (
 type userMetadataKey struct{}
 
 type implAuthorizationMiddleware struct {
-	Application      sprint.Application      `inject`
-	Properties       glue.Properties         `inject`
-	ConfigRepository sprint.ConfigRepository `inject`
+	Application      sprint.Application       `inject`
+	Properties       glue.Properties          `inject`
+	ConfigRepository sprint.ConfigRepository  `inject`
 	Log              *zap.Logger              `inject`
 
 	invalidTokens     sync.Map   // key is string, value is true

@@ -21,7 +21,7 @@ type implTlsConfigFactory struct {
 	NodeService sprint.NodeService `inject`
 
 	CertificateManager sprint.CertificateManager `inject`
-	DomainService      sprint.CertificateService `inject`
+	CertificateService sprint.CertificateService `inject`
 
 	beanName          string
 }
