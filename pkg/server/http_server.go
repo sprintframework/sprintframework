@@ -6,6 +6,7 @@
 package server
 
 import (
+	"crypto/tls"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"go.uber.org/atomic"
@@ -89,14 +90,20 @@ func (t *implHttpServer) Serve() (err error) {
 
 	t.running.Store(true)
 	if t.srv.TLSConfig != nil {
-		err = t.srv.ServeTLS(t.listener, "", "")
-	} else {
-		err = t.srv.Serve(t.listener)
+		t.listener = tls.NewListener(t.listener, t.srv.TLSConfig)
+		//err = t.srv.ServeTLS(t.listener, "", "")
 	}
+
+	err = t.srv.Serve(t.listener)
 
 	t.running.Store(false)
 	if err != nil && strings.Contains(err.Error(), "closed") {
 		return nil
 	}
+
+	if err != nil {
+		t.Log.Warn("HttpServerErr", zap.Error(err))
+	}
+
 	return err
 }
