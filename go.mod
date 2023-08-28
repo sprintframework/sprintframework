@@ -15,10 +15,10 @@ require (
 	github.com/keyvalstore/store v1.3.0
 	github.com/mailgun/mailgun-go/v4 v4.8.1
 	github.com/pkg/errors v0.9.1
-	github.com/sprintframework/cert v0.0.5
-	github.com/sprintframework/dns v0.0.2 // indirect
-	github.com/sprintframework/nat v0.0.1
-	github.com/sprintframework/sprint v1.2.3
+	github.com/sprintframework/cert v1.0.0
+	github.com/sprintframework/dns v1.0.0 // indirect
+	github.com/sprintframework/nat v1.0.0
+	github.com/sprintframework/sprint v1.3.0
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.24.0
@@ -34,7 +34,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/keyvalstore/boltstore v1.3.0
 	github.com/keyvalstore/cachestore v1.3.0
-	github.com/sprintframework/sprintpb v1.2.1
+	github.com/sprintframework/sprintpb v1.3.0
 )
 
 require (
@@ -58,7 +58,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/sprintframework/certpb v0.0.1 // indirect
+	github.com/sprintframework/certpb v1.0.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/oauth2 v0.9.0 // indirect
