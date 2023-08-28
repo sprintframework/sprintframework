@@ -7,7 +7,6 @@ package core
 
 import (
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sealmod"
 )
 
 type coreScanner struct {
@@ -28,8 +27,6 @@ func (t *coreScanner) CoreBeans() []interface{} {
 		ConfigRepository(10000),
 		JobService(),
 		StorageService(),
-		WhoisService(),
-		sealmod.Scanner(),
 		MailService(),
 		&struct {
 			ClientScanners []sprint.ClientScanner `inject`

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/cert"
+	"github.com/sprintframework/nat"
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintpb"
 	"github.com/sprintframework/sprintframework/pkg/app"
@@ -62,7 +63,7 @@ type implGrpcControlServer struct {
 	CertificateService    cert.CertificateService    `inject:"optional"`
 	CertificateManager    cert.CertificateManager    `inject:"optional"`
 
-	NatService    sprint.NatService  `inject:"optional"`
+	NatService    nat.NatService  `inject:"optional"`
 
 	startTime   time.Time
 }
