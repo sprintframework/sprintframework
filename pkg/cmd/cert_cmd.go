@@ -8,6 +8,7 @@ package cmd
 import (
 	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/sprintframework/cert"
 	"github.com/sprintframework/sprint"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -19,7 +20,7 @@ type implCertCommand struct {
 }
 
 type coreDomainContext struct {
-	CertificateService sprint.CertificateService `inject`
+	CertificateService cert.CertificateService `inject:"optional"`
 }
 
 func CertCommand() sprint.Command {
@@ -61,11 +62,15 @@ func (t *implCertCommand) Run(args []string) error {
 
 	c := new(coreDomainContext)
 	return doInCore(t.Context, c, func(core glue.Context) error {
-		content, err :=  c.CertificateService.ExecuteCommand(cmd, args)
-		if err != nil {
-			return err
+		if c.CertificateService != nil {
+			content, err :=  c.CertificateService.ExecuteCommand(cmd, args)
+			if err != nil {
+				return err
+			}
+			println(content)
+		} else {
+			println("Error: cert.CertificateService not found in core context")
 		}
-		println(content)
 		return nil
 	})
 

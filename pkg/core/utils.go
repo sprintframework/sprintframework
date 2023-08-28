@@ -6,28 +6,9 @@
 package core
 
 import (
-	"github.com/go-acme/lego/v4/certcrypto"
 	"github.com/pkg/errors"
 	"os"
-	"strings"
 )
-
-func indexStrings(a []string) map[string]bool {
-	m := make(map[string]bool)
-	for _, part := range a {
-		key := strings.TrimSpace(part)
-		m[key] = true
-	}
-	return m
-}
-
-func asList(m map[string]bool) []string {
-	var a []string
-	for k := range m {
-		a = append(a, k)
-	}
-	return a
-}
 
 func createDirIfNeeded(dir string, perm os.FileMode) error {
 	if _, err := os.Stat(dir); err != nil {
@@ -42,7 +23,7 @@ func createDirIfNeeded(dir string, perm os.FileMode) error {
 }
 
 
-func parseBool(str string) (bool, error) {
+func ParseBool(str string) (bool, error) {
 	switch str {
 	case "1", "t", "T", "true", "TRUE", "True", "on", "ON", "On":
 		return true, nil
@@ -52,19 +33,3 @@ func parseBool(str string) (bool, error) {
 	return false, errors.Errorf("invalid syntax %s", str)
 }
 
-
-func getKeyType(algorithm string) certcrypto.KeyType {
-	switch strings.ToUpper(algorithm) {
-	case "RSA2048":
-		return certcrypto.RSA2048
-	case "RSA4096":
-		return certcrypto.RSA4096
-	case "RSA8192":
-		return certcrypto.RSA8192
-	case "EC256":
-		return certcrypto.EC256
-	case "EC384":
-		return certcrypto.EC384
-	}
-	return certcrypto.RSA2048
-}

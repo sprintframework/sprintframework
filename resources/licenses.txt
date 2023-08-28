@@ -5,8 +5,8 @@ github.com/cespare/xxhash/v2,https://github.com/cespare/xxhash/blob/v2.2.0/LICEN
 github.com/codeallergy/base62,https://github.com/codeallergy/base62/blob/v1.0.0/LICENSE,Apache-2.0
 github.com/codeallergy/glue,https://github.com/codeallergy/glue/blob/v1.0.2/LICENSE,Apache-2.0
 github.com/codeallergy/properties,https://github.com/codeallergy/properties/blob/v1.0.0/LICENSE,Apache-2.0
-github.com/codeallergy/seal,https://github.com/codeallergy/seal/blob/v1.0.0/LICENSE,Apache-2.0
-github.com/codeallergy/sealmod,https://github.com/codeallergy/sealmod/blob/v1.0.0/LICENSE,Apache-2.0
+github.com/sprintframework/seal,https://github.com/sprintframework/seal/blob/v1.0.0/LICENSE,Apache-2.0
+github.com/sprintframework/sealmod,https://github.com/sprintframework/sealmod/blob/v1.0.0/LICENSE,Apache-2.0
 github.com/codeallergy/uuid,https://github.com/codeallergy/uuid/blob/v1.0.1/LICENSE,Apache-2.0
 github.com/dgraph-io/badger/v3,https://github.com/dgraph-io/badger/blob/v3.2103.5/LICENSE,Apache-2.0
 github.com/dgraph-io/ristretto,https://github.com/dgraph-io/ristretto/blob/v0.1.1/LICENSE,Apache-2.0

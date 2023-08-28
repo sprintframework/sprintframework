@@ -7,7 +7,7 @@ package server
 
 import (
 	"fmt"
-	"github.com/go-errors/errors"
+	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
 	"html/template"

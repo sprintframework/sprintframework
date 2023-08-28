@@ -10,6 +10,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/codeallergy/glue"
+	"github.com/sprintframework/cert"
 	"github.com/sprintframework/sprint"
 	"reflect"
 	"github.com/pkg/errors"
@@ -20,8 +21,7 @@ type implTlsConfigFactory struct {
 	Properties  glue.Properties `inject`
 	NodeService sprint.NodeService `inject`
 
-	CertificateManager sprint.CertificateManager `inject`
-	CertificateService sprint.CertificateService `inject`
+	CertificateManager cert.CertificateManager `inject:"optional"`
 
 	beanName          string
 }
@@ -48,9 +48,12 @@ func (t *implTlsConfigFactory) Object() (obj interface{}, err error) {
 	insecure := t.Properties.GetBool(fmt.Sprintf("%s.insecure", t.beanName), false)
 
 	tlsConfig := &tls.Config{
-		GetCertificate: t.CertificateManager.GetCertificate,
 		Rand:         rand.Reader,
 		InsecureSkipVerify: insecure,
+	}
+
+	if t.CertificateManager != nil {
+		tlsConfig.GetCertificate = t.CertificateManager.GetCertificate
 	}
 
 	tlsConfig.NextProtos = AppendH2ToNextProtos(tlsConfig.NextProtos)

@@ -7,9 +7,7 @@ package core
 
 import (
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/core/dns"
-	"github.com/sprintframework/sprintframework/pkg/core/nat"
-	"github.com/codeallergy/sealmod"
+	"github.com/sprintframework/sealmod"
 )
 
 type coreScanner struct {
@@ -31,14 +29,7 @@ func (t *coreScanner) CoreBeans() []interface{} {
 		JobService(),
 		StorageService(),
 		WhoisService(),
-		dns.DNSProviderScanner(),
-		sealmod.SealService(),
-		CertificateIssueService(),
-		CertificateRepository(),
-		CertificateService(),
-		CertificateManager(),
-		nat.NatServiceFactory(),
-		DynDNSService(),
+		sealmod.Scanner(),
 		MailService(),
 		&struct {
 			ClientScanners []sprint.ClientScanner `inject`

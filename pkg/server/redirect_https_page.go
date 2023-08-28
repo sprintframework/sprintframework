@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"github.com/go-errors/errors"
+	"github.com/pkg/errors"
 	"net/http"
 	"strings"
 )

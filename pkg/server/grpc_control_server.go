@@ -9,6 +9,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/codeallergy/glue"
+	"github.com/sprintframework/cert"
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintpb"
 	"github.com/sprintframework/sprintframework/pkg/app"
@@ -58,9 +59,8 @@ type implGrpcControlServer struct {
 	JobService            sprint.JobService            `inject`
 	StorageService        sprint.StorageService        `inject`
 	ConfigRepository      sprint.ConfigRepository      `inject`
-	CertificateRepository sprint.CertificateRepository `inject`
-	CertificateService    sprint.CertificateService    `inject`
-	CertificateManager    sprint.CertificateManager    `inject`
+	CertificateService    cert.CertificateService    `inject:"optional"`
+	CertificateManager    cert.CertificateManager    `inject:"optional"`
 
 	NatService    sprint.NatService  `inject:"optional"`
 
@@ -364,17 +364,27 @@ func (t *implGrpcControlServer) Certificate(ctx context.Context, req *sprintpb.C
 	}
 
 	if req.Command == "manager" {
-		content, err := t.CertificateManager.ExecuteCommand(req.Command, req.Args)
-		if err != nil {
-			return nil, err
+		if t.CertificateManager != nil {
+			content, err := t.CertificateManager.ExecuteCommand(req.Command, req.Args)
+			if err != nil {
+				return nil, err
+			}
+			return &sprintpb.CommandResult{Content: content}, nil
+		} else {
+			return &sprintpb.CommandResult{Content: "Error: certificate manager not found in context"}, nil
 		}
-		return &sprintpb.CommandResult{Content: content}, nil
+
 	} else {
-		content, err := t.CertificateService.ExecuteCommand(req.Command, req.Args)
-		if err != nil {
-			return nil, err
+		if t.CertificateService != nil {
+			content, err := t.CertificateService.ExecuteCommand(req.Command, req.Args)
+			if err != nil {
+				return nil, err
+			}
+			return &sprintpb.CommandResult{Content: content}, nil
+		} else {
+			return &sprintpb.CommandResult{Content: "Error: certificate service not found in context"}, nil
 		}
-		return &sprintpb.CommandResult{Content: content}, nil
+
 	}
 
 }
