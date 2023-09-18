@@ -127,9 +127,16 @@ func (t *implRunCommand) Run(args []string) (err error) {
 	
 	err = runServers(t.Application, core, logger)
 	if err != nil {
-		logger.Error("ApplicationEnded", zap.Bool("restarting", t.Application.Restarting()), zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)), zap.Error(err))
+		logger.Error("ApplicationEnded",
+			zap.Bool("restarting", t.Application.Restarting()),
+			zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)),
+			zap.Any("props", t.ApplicationFlags.Properties()),
+			zap.Error(err))
 	} else {
-		logger.Info("ApplicationEnded", zap.Bool("restarting", t.Application.Restarting()), zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)))
+		logger.Info("ApplicationEnded",
+			zap.Bool("restarting", t.Application.Restarting()),
+			zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)),
+			zap.Any("props", t.ApplicationFlags.Properties()))
 	}
 
 	err = core.Close()
