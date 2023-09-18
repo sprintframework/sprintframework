@@ -31,7 +31,25 @@ func (t *implKeygenCommand) BeanName() string {
 	return "keygen"
 }
 
-func (t *implKeygenCommand) Desc() string {
+func (t *implKeygenCommand) Help() string {
+	helpText := `
+Usage: ./%s keygen [command]
+
+	Issues token and keys using on startup or in rpc calls.
+
+Commands:
+
+  boot                      Generates the bootstrap token using for decryption of configs and databases.
+
+  auth                      Generates JWT authorization token using in gRPC and HTTPS.
+
+  verify                    Verify the JWT token and decodes arguments.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implKeygenCommand) Synopsis() string {
 	return "keygen commands [boot, auth, verify]"
 }
 
@@ -51,7 +69,7 @@ func (t *implKeygenCommand) Run(args []string) (err error) {
 	}()
 
 	if len(args) == 0 {
-		return errors.Errorf("keygen command needs argument [boot, auth]")
+		return errors.Errorf("keygen command needs argument: %s", t.Synopsis())
 	}
 	cmd := args[0]
 	args = args[1:]

@@ -15,6 +15,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type implRunCommand struct {
@@ -42,7 +43,17 @@ func (t *implRunCommand) BeanName() string {
 	return "run"
 }
 
-func (t *implRunCommand) Desc() string {
+func (t *implRunCommand) Help() string {
+	helpText := `
+Usage: ./%s run
+
+	Runs the application server.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implRunCommand) Synopsis() string {
 	return "run server"
 }
 

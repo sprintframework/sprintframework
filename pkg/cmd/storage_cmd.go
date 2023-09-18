@@ -6,15 +6,18 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"os"
+	"strings"
 )
 
 type implStorageCommand struct {
+	Application      sprint.Application      `inject`
 	Context          glue.Context           `inject`
 }
 
@@ -30,14 +33,40 @@ func (t *implStorageCommand) BeanName() string {
 	return "storage"
 }
 
-func (t *implStorageCommand) Desc() string {
+func (t *implStorageCommand) Help() string {
+	helpText := `
+Usage: ./%s storage [command]
+
+	Provides management functionality for the internal storage(s).
+
+Commands:
+
+  console                  Runs interactive storage console.
+
+  list                     Lists available internal storages.
+
+  dump                     Dumps the internal storage to the file.
+
+  restore                  Restore internal storage from the file.
+
+  compact                  Runs compaction background process on internal storage.
+
+  drop                     Non-reversible operation of deleting all records in the internal storage.
+
+  clean                    Clean the storage.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implStorageCommand) Synopsis() string {
 	return "storage management commands: [console, list, dump, restore, compact, drop, clean]"
 }
 
 func (t *implStorageCommand) Run(args []string) error {
 
 	if len(args) < 1 {
-		return errors.New(t.Desc())
+		return errors.Errorf("storage needs command: %s", t.Synopsis())
 	}
 
 	cmd := args[0]

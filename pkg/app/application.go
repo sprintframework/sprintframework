@@ -336,7 +336,7 @@ func (t *application) printUsage(dep *applicationDep) {
 	fmt.Printf("Usage: %s [command]\n", t.executable)
 
 	for _, command := range dep.Commands {
-		fmt.Printf("    %s - %s\n", command.BeanName(), command.Desc())
+		fmt.Printf("    %s - %s\n", command.BeanName(), command.Synopsis())
 	}
 
 	fmt.Println("Flags:")

@@ -34,7 +34,17 @@ func (t *implSetupCommand) BeanName() string {
 	return "setup"
 }
 
-func (t *implSetupCommand) Desc() string {
+func (t *implSetupCommand) Help() string {
+	helpText := `
+Usage: ./%s setup
+
+	Setups the application server for the first time.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implSetupCommand) Synopsis() string {
 	return "setup command"
 }
 

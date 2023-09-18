@@ -53,7 +53,7 @@ func (t *implStorageService) PostConstruct() error {
 	return nil
 }
 
-func (t *implStorageService) Execute(name, query string, cb func(string) bool) (err error) {
+func (t *implStorageService) ExecuteQuery(name, query string, cb func(string) bool) (err error) {
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -180,7 +180,7 @@ func (t *implStorageService) Console(stream sprint.StorageConsoleStream) error {
 
 		} else {
 
-			err = t.Execute(defaultStorage, request.Query, func(content string) bool {
+			err = t.ExecuteQuery(defaultStorage, request.Query, func(content string) bool {
 
 				rec := &sprintpb.StorageConsoleResponse{
 					Status:  200,
@@ -241,7 +241,7 @@ func (t *implStorageService) LocalConsole(writer io.StringWriter, errWriter io.S
 			continue
 		}
 
-		err := t.Execute(defaultStorage, query, func(s string) bool {
+		err := t.ExecuteQuery(defaultStorage, query, func(s string) bool {
 			writer.WriteString(fmt.Sprintf("%s\n", s))
 			return true
 		})

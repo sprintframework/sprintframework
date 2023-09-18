@@ -6,11 +6,14 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
+	"strings"
 )
 
 type implStatusCommand struct {
+	Application sprint.Application `inject`
 	Context glue.Context `inject`
 }
 
@@ -22,7 +25,17 @@ func (t *implStatusCommand) BeanName() string {
 	return "status"
 }
 
-func (t *implStatusCommand) Desc() string {
+func (t *implStatusCommand) Help() string {
+	helpText := `
+Usage: ./%s status
+
+	Returns the status of running server application.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implStatusCommand) Synopsis() string {
 	return "server status"
 }
 

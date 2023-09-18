@@ -47,7 +47,17 @@ func (t *implStartCommand) BeanName() string {
 	return "start"
 }
 
-func (t *implStartCommand) Desc() string {
+func (t *implStartCommand) Help() string {
+	helpText := `
+Usage: ./%s start
+
+	Starts the application server in background mode.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implStartCommand) Synopsis() string {
 	return "start server"
 }
 

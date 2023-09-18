@@ -6,12 +6,14 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/cert"
 	"github.com/sprintframework/sprint"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"strings"
 )
 
 type implCertCommand struct {
@@ -31,13 +33,45 @@ func (t *implCertCommand) BeanName() string {
 	return "cert"
 }
 
-func (t *implCertCommand) Desc() string {
+func (t *implCertCommand) Help() string {
+	helpText := `
+Usage: ./%s cert [command]
+
+	Provides management functionality over certificates.
+
+Commands:
+
+  list                     Display list of all certificates in the system.
+
+  dump                     Dumps the particular certificate to the console in PEM format.
+
+  upload                   Uploads the certificate to the system.
+
+  create                   Created the certificate.
+
+  renew                    Renew certificate.
+
+  remove                   Removed certificate from the system.
+
+  client                   Client operations over certificates.
+
+  acme                     ACME operations over certificates.
+
+  self                     Self-signed certificates.
+
+  manager                  Invoke certificate manager console.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implCertCommand) Synopsis() string {
 	return "cert commands: [list, dump, upload, create, renew, remove, client, acme, self, manager]"
 }
 
 func (t *implCertCommand) Run(args []string) error {
 	if len(args) == 0 {
-		return errors.Errorf("cert command needs argument, %s", t.Desc())
+		return errors.Errorf("cert command needs argument, %s", t.Synopsis())
 	}
 	cmd := args[0]
 	args = args[1:]

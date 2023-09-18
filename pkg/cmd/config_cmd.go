@@ -39,13 +39,33 @@ func (t *implConfigCommand) BeanName() string {
 	return "config"
 }
 
-func (t *implConfigCommand) Desc() string {
+func (t *implConfigCommand) Help() string {
+	helpText := `
+Usage: ./%s config [command]
+
+	Provides management functionality for the internal config.
+
+Commands:
+
+  get                      Gets the config entry by key.
+
+  set                      Sets the config entry value by key.
+
+  list                     List all config entries, hides the passwords and keys.
+
+  dump                     Dumps all config entries to move to another system. Needs admin permissions.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implConfigCommand) Synopsis() string {
 	return "config commands: [get, set, dump, list]"
 }
 
 func (t *implConfigCommand) Run(args []string) error {
 	if len(args) == 0 {
-		return errors.Errorf("config command needs argument, %s", t.Desc())
+		return errors.Errorf("config command needs argument, %s", t.Synopsis())
 	}
 	cmd := args[0]
 	args = args[1:]

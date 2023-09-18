@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
+	"strings"
 )
 
 type implVersionCommand struct {
@@ -26,7 +27,17 @@ func (t *implVersionCommand) BeanName() string {
 	return "version"
 }
 
-func (t *implVersionCommand) Desc() string {
+func (t *implVersionCommand) Help() string {
+	helpText := `
+Usage: ./%s version
+
+	Display the current version and build of the application.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implVersionCommand) Synopsis() string {
 	return "show version"
 }
 

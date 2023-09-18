@@ -15,6 +15,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 type implStopCommand struct {
@@ -33,7 +34,17 @@ func (t *implStopCommand) BeanName() string {
 	return "stop"
 }
 
-func (t *implStopCommand) Desc() string {
+func (t *implStopCommand) Help() string {
+	helpText := `
+Usage: ./%s stop
+
+	Stops the running server application.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implStopCommand) Synopsis() string {
 	return "stop server"
 }
 

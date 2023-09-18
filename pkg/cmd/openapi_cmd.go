@@ -6,11 +6,14 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/sprintframework/sprint"
+	"strings"
 )
 
 type implOpenapiCommand struct {
-	ResourceService sprint.ResourceService `inject`
+	Application      sprint.Application      `inject`
+	ResourceService sprint.ResourceService   `inject`
 }
 
 func OpenAPICommand() sprint.Command {
@@ -21,7 +24,17 @@ func (t *implOpenapiCommand) BeanName() string {
 	return "openapi"
 }
 
-func (t *implOpenapiCommand) Desc() string {
+func (t *implOpenapiCommand) Help() string {
+	helpText := `
+Usage: ./%s openapi
+
+	Display Open API interfaces available in the application.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implOpenapiCommand) Synopsis() string {
 	return "openapi description"
 }
 

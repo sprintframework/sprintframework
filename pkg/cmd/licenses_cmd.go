@@ -6,11 +6,14 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/sprintframework/sprint"
+	"strings"
 )
 
 type implLicensesCommand struct {
-	ResourceService sprint.ResourceService `inject`
+	Application      sprint.Application      `inject`
+	ResourceService sprint.ResourceService   `inject`
 }
 
 func LicensesCommand() sprint.Command {
@@ -21,8 +24,18 @@ func (t *implLicensesCommand) BeanName() string {
 	return "licenses"
 }
 
-func (t *implLicensesCommand) Desc() string {
-	return "show all licenses"
+func (t *implLicensesCommand) Help() string {
+	helpText := `
+Usage: ./%s licenses
+
+	Display the list of open source licenses using by the application.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implLicensesCommand) Synopsis() string {
+	return "open source licenses"
 }
 
 func (t *implLicensesCommand) Run(args []string) error {

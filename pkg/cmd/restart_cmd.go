@@ -6,11 +6,14 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
+	"strings"
 )
 
 type implRestartCommand struct {
+	Application      sprint.Application      `inject`
 	Context glue.Context `inject`
 }
 
@@ -22,7 +25,17 @@ func (t *implRestartCommand) BeanName() string {
 	return "restart"
 }
 
-func (t *implRestartCommand) Desc() string {
+func (t *implRestartCommand) Help() string {
+	helpText := `
+Usage: ./%s restart
+
+	Restarts the application server.
+
+`
+	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
+}
+
+func (t *implRestartCommand) Synopsis() string {
 	return "restart server"
 }
 
