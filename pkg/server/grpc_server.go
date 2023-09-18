@@ -109,14 +109,11 @@ func (t *implGrpcServer) Serve() (err error) {
 	err = t.srv.Serve(t.listener)
 	t.running.Store(false)
 
-	if err != nil && strings.Contains(err.Error(), "closed") {
+	if err == nil || strings.Contains(err.Error(), "closed") {
 		return nil
 	}
 
-	if err != nil {
-		t.Log.Warn("GrpcServerErr", zap.Error(err))
-	}
-
+	t.Log.Warn("GrpcServerClose", zap.Error(err))
 	return err
 
 }

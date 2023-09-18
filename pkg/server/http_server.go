@@ -97,13 +97,11 @@ func (t *implHttpServer) Serve() (err error) {
 	err = t.srv.Serve(t.listener)
 
 	t.running.Store(false)
-	if err != nil && strings.Contains(err.Error(), "closed") {
+
+	if err == nil || strings.Contains(err.Error(), "closed") {
 		return nil
 	}
 
-	if err != nil {
-		t.Log.Warn("HttpServerErr", zap.Error(err))
-	}
-
+	t.Log.Warn("HttpServerClose", zap.Error(err))
 	return err
 }
