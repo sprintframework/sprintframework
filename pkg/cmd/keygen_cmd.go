@@ -17,25 +17,25 @@ import (
 	"time"
 )
 
-type implTokenCommand struct {
+type implKeygenCommand struct {
 	Application      sprint.Application      `inject`
 	ApplicationFlags sprint.ApplicationFlags `inject`
 	Properties       glue.Properties      `inject`
 }
 
-func TokenCommand() sprint.Command {
-	return &implTokenCommand{}
+func KeygenCommand() sprint.Command {
+	return &implKeygenCommand{}
 }
 
-func (t *implTokenCommand) BeanName() string {
-	return "token"
+func (t *implKeygenCommand) BeanName() string {
+	return "keygen"
 }
 
-func (t *implTokenCommand) Desc() string {
-	return "token generator commands [boot, auth, verify]"
+func (t *implKeygenCommand) Desc() string {
+	return "keygen commands [boot, auth, verify]"
 }
 
-func (t *implTokenCommand) Run(args []string) (err error) {
+func (t *implKeygenCommand) Run(args []string) (err error) {
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -51,7 +51,7 @@ func (t *implTokenCommand) Run(args []string) (err error) {
 	}()
 
 	if len(args) == 0 {
-		return errors.Errorf("token command needs argument [boot, auth]")
+		return errors.Errorf("keygen command needs argument [boot, auth]")
 	}
 	cmd := args[0]
 	args = args[1:]
@@ -68,7 +68,7 @@ func (t *implTokenCommand) Run(args []string) (err error) {
 	}
 }
 
-func (t *implTokenCommand) generateBootstrapToken(args []string) error {
+func (t *implKeygenCommand) generateBootstrapToken(args []string) error {
 	if token, err := util.GenerateToken(); err == nil {
 		println(token)
 		return nil
@@ -77,10 +77,10 @@ func (t *implTokenCommand) generateBootstrapToken(args []string) error {
 	}
 }
 
-func (t *implTokenCommand) generateAuthToken(args []string) error {
+func (t *implKeygenCommand) generateAuthToken(args []string) error {
 
 	if len(args) < 4 {
-		return errors.Errorf("Usage: ./%s token auth username roles context ttl-in-days", t.Application.Executable())
+		return errors.Errorf("Usage: ./%s keygen auth username roles context ttl-in-days", t.Application.Executable())
 	}
 
 	username := args[0]
@@ -131,7 +131,7 @@ func (t *implTokenCommand) generateAuthToken(args []string) error {
 	return nil
 }
 
-func (t *implTokenCommand) verifyAuthToken(args []string) error {
+func (t *implKeygenCommand) verifyAuthToken(args []string) error {
 
 	var authToken string
 	if len(args) > 0 {
