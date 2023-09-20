@@ -153,7 +153,7 @@ func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 		}
 	}
 
-	args = append(args, "run")
+	args = append(args, "node", "run")
 	cmd := exec.Command(nextExePath, args...)
 	cmd.Env = append(os.Environ(), t.SystemEnvironmentPropertyResolver.Environ(true)...)
 
