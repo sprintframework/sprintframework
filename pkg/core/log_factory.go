@@ -21,7 +21,7 @@ import (
 type implLogFactory struct {
 	Application      sprint.Application      `inject`
 	ApplicationFlags sprint.ApplicationFlags `inject`
-	Properties       glue.Properties      `inject`
+	Properties       glue.Properties         `inject`
 
 	RotateLogger  *lumberjack.Logger       `inject:"optional"`
 
@@ -60,7 +60,7 @@ func (t *implLogFactory) Object() (object interface{}, err error) {
 			if logDir == "" {
 				logDir = filepath.Join(t.Application.ApplicationDir(), "log")
 			}
-			logFile := fmt.Sprintf("%s.log", t.Application.Name())
+			logFile := fmt.Sprintf("%s.log", t.getNodeName())
 
 			if _, err := os.Stat(logDir); err != nil {
 				if err = os.MkdirAll(logDir, t.LogDirPerm); err != nil {
@@ -97,4 +97,8 @@ func (t *implLogFactory) ObjectName() string {
 
 func (t *implLogFactory) Singleton() bool {
 	return true
+}
+
+func (t *implLogFactory) getNodeName() string {
+	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
 }

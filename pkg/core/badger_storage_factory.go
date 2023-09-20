@@ -24,6 +24,7 @@ type implBadgerStorageFactory struct {
 
 	Log                               *zap.Logger                           `inject`
 	Application                       sprint.Application                    `inject`
+	ApplicationFlags                  sprint.ApplicationFlags               `inject`
 	Properties                        glue.Properties                       `inject`
 	SystemEnvironmentPropertyResolver sprint.SystemEnvironmentPropertyResolver `inject`
 
@@ -38,18 +39,7 @@ func BadgerStorageFactory(beanName string) glue.FactoryBean {
 
 func (t *implBadgerStorageFactory) Object() (object interface{}, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	bootstrapToken := t.Properties.GetString("application.boot", "")
 	if bootstrapToken == "" {
@@ -68,7 +58,7 @@ func (t *implBadgerStorageFactory) Object() (object interface{}, err error) {
 			return nil, err
 		}
 
-		dataDir = filepath.Join(dataDir, t.Application.Name())
+		dataDir = filepath.Join(dataDir, t.getNodeName())
 	}
 
 	if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
@@ -132,3 +122,6 @@ func (t *implBadgerStorageFactory) Singleton() bool {
 	return true
 }
 
+func (t *implBadgerStorageFactory) getNodeName() string {
+	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+}

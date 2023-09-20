@@ -8,12 +8,11 @@ package core
 import (
 	"fmt"
 	"github.com/codeallergy/glue"
-	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
 	"github.com/codeallergy/uuid"
 	"github.com/pkg/errors"
+	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/atomic"
-	"go.uber.org/zap"
 	"runtime"
 	"strconv"
 	"sync"
@@ -25,9 +24,8 @@ const oneMb = 1024 * 1024
 type implNodeService struct {
 	Application         sprint.Application         `inject`
 	ApplicationFlags    sprint.ApplicationFlags    `inject`
-	Properties       glue.Properties          `inject`
-	ConfigRepository sprint.ConfigRepository  `inject`
-	Log              *zap.Logger              `inject`
+	Properties          glue.Properties            `inject`
+	ConfigRepository    sprint.ConfigRepository    `inject`
 
 	initOnce sync.Once
 
@@ -69,12 +67,7 @@ func (t *implNodeService) PostConstruct() (err error) {
 
 	defer util.PanicToError(&err)
 
-	seq := t.ApplicationFlags.Node()
-	if seq == 0 {
-		t.nodeName = t.Application.Name()
-	} else {
-		t.nodeName = fmt.Sprintf("%s-%d", t.Application.Name(), t.ApplicationFlags.Node())
-	}
+	t.nodeName = util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
 
 	t.nodeIdHex = t.Properties.GetString("node.id", "")
 	if t.nodeIdHex == "" {

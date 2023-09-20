@@ -17,9 +17,9 @@ import (
 )
 
 type implLumberjackFactory struct {
-	Application      sprint.Application      `inject`
-	ApplicationFlags sprint.ApplicationFlags `inject`
-	Properties       glue.Properties      `inject`
+	Application      sprint.Application       `inject`
+	ApplicationFlags sprint.ApplicationFlags  `inject`
+	Properties       glue.Properties          `inject`
 
 	LogDir        string        `value:"application.log.dir,default="`
 	LogDirPerm    os.FileMode   `value:"application.perm.log.dir,default=-rwxrwxr-x"`
@@ -42,7 +42,7 @@ func (t *implLumberjackFactory) Object() (object interface{}, err error) {
 	if logDir == "" {
 		logDir = filepath.Join(t.Application.ApplicationDir(), "log")
 	}
-	logFile := fmt.Sprintf("%s.log", t.Application.Name())
+	logFile := fmt.Sprintf("%s.log", t.getNodeName())
 
 	if _, err := os.Stat(logDir); err != nil {
 		if err = os.MkdirAll(logDir, t.LogDirPerm); err != nil {
@@ -83,4 +83,6 @@ func (t *implLumberjackFactory) Singleton() bool {
 	return true
 }
 
-
+func (t *implLumberjackFactory) getNodeName() string {
+	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+}

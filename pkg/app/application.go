@@ -9,8 +9,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/codeallergy/glue"
-	"github.com/sprintframework/sprint"
 	"github.com/pkg/errors"
+	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/atomic"
 	"math/rand"
@@ -119,7 +119,7 @@ type application struct {
 
 type applicationDep struct {
 	ApplicationFlags sprint.ApplicationFlags   `inject`
-	FlagSet          *flag.FlagSet            `inject`
+	FlagSet          *flag.FlagSet             `inject`
 	Commands         map[string]sprint.Command `inject`
 }
 
@@ -257,6 +257,7 @@ func (t *application) Run(args []string) (err error) {
 	propertyMap := &glue.PropertySource{ Map: map[string]interface{} {
 		"application": map[string]interface{} {
 			"name": t.applicationName,
+			"node": util.FormatNodeName(t.applicationName, dep.ApplicationFlags.Node()),
 			"version": t.applicationVersion,
 			"build": t.applicationBuild,
 			"profile": t.applicationProfile,

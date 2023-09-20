@@ -5,18 +5,14 @@
 
 package util
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+	"runtime/debug"
+)
 
 func PanicToError(err *error) {
 	if r := recover(); r != nil {
-		switch v := r.(type) {
-		case error:
-			*err = v
-		case string:
-			*err = errors.New(v)
-		default:
-			*err = errors.Errorf("%v", v)
-		}
+		*err = errors.Errorf("%v, %s", r, debug.Stack())
 	}
 }
 

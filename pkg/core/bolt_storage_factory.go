@@ -19,8 +19,9 @@ import (
 type implBoltStorageFactory struct {
 	beanName        string
 
-	Application sprint.Application `inject`
-	Properties  glue.Properties `inject`
+	Application      sprint.Application      `inject`
+	ApplicationFlags sprint.ApplicationFlags `inject`
+	Properties       glue.Properties         `inject`
 
 	DataDir           string       `value:"application.data.dir,default="`
 	DataDirPerm       os.FileMode  `value:"application.perm.data.dir,default=-rwxrwx---"`
@@ -43,7 +44,7 @@ func (t *implBoltStorageFactory) Object() (object interface{}, err error) {
 			return nil, err
 		}
 
-		dataDir = filepath.Join(dataDir, t.Application.Name())
+		dataDir = filepath.Join(dataDir, t.getNodeName())
 	}
 	if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 		return nil, err
@@ -67,4 +68,6 @@ func (t *implBoltStorageFactory) Singleton() bool {
 	return true
 }
 
-
+func (t *implBoltStorageFactory) getNodeName() string {
+	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+}
