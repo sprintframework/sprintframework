@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-type implCertCommand struct {
+type implCertsCommand struct {
 	Context     glue.Context    `inject`
 	Application sprint.Application `inject`
 }
@@ -25,15 +25,15 @@ type coreDomainContext struct {
 	CertificateService cert.CertificateService `inject:"optional"`
 }
 
-func CertCommand() sprint.Command {
-	return &implCertCommand{}
+func CertsCommand() sprint.Command {
+	return &implCertsCommand{}
 }
 
-func (t *implCertCommand) BeanName() string {
+func (t *implCertsCommand) BeanName() string {
 	return "certs"
 }
 
-func (t *implCertCommand) Help() string {
+func (t *implCertsCommand) Help() string {
 	helpText := `
 Usage: ./%s certs [command]
 
@@ -65,11 +65,11 @@ Commands:
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
 }
 
-func (t *implCertCommand) Synopsis() string {
+func (t *implCertsCommand) Synopsis() string {
 	return "certs commands: [list, dump, upload, create, renew, remove, client, acme, self, manager]"
 }
 
-func (t *implCertCommand) Run(args []string) error {
+func (t *implCertsCommand) Run(args []string) error {
 	if len(args) == 0 {
 		return errors.Errorf("cert command needs argument, %s", t.Synopsis())
 	}
