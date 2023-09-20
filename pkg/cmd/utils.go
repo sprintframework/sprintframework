@@ -102,7 +102,7 @@ func doWithServers(core glue.Context, cb func([]sprint.Server) error) (err error
 	return cb(serverList)
 }
 
-func runServers(application sprint.Application, core glue.Context, log *zap.Logger) error {
+func runServers(application sprint.Application, flags sprint.ApplicationFlags, core glue.Context, log *zap.Logger) error {
 
 	return doWithServers(core, func(servers []sprint.Server) error {
 
@@ -142,7 +142,7 @@ func runServers(application sprint.Application, core glue.Context, log *zap.Logg
 			g.Go(server.Serve)
 			cnt++
 		}
-		log.Info("ApplicationStarted", zap.Int("Servers", cnt))
+		log.Info("NodeStarted", zap.Int("Servers", cnt), zap.Int("Node", flags.Node()))
 
 		go func() {
 
@@ -172,13 +172,13 @@ func runServers(application sprint.Application, core glue.Context, log *zap.Logg
 				application.Shutdown(true)
 			}
 
-			log.Info("StopApplication", zap.String("signal", signal.String()))
+			log.Info("StopNodeSignal", zap.String("signal", signal.String()))
 			total := 0
 			for _, server := range boundServers {
 				server.Stop()
 				total++
 			}
-			log.Info("ServersStopped", zap.Int("cnt", total))
+			log.Info("NodeStopped", zap.Int("cnt", total), zap.Int("node", flags.Node()))
 			log.Sync()
 			cancel()
 

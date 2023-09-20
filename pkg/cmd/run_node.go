@@ -113,20 +113,22 @@ func (t *implRunNode) Run(args []string) (err error) {
 
 	defer func() {
 		if r := recover(); r != nil {
-			logger.Error("ApplicationRecover", zap.Error(err))
+			logger.Error("NodeRecover", zap.Error(err))
 		}
 	}()
 	
-	err = runServers(t.Application, core, logger)
+	err = runServers(t.Application, t.ApplicationFlags, core, logger)
 	if err != nil {
-		logger.Error("ApplicationEnded",
+		logger.Error("NodeDestroyed",
 			zap.Bool("restarting", t.Application.Restarting()),
+			zap.Int("node", t.ApplicationFlags.Node()),
 			zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)),
 			zap.Any("props", t.ApplicationFlags.Properties()),
 			zap.Error(err))
 	} else {
-		logger.Info("ApplicationEnded",
+		logger.Info("NodeDestroyed",
 			zap.Bool("restarting", t.Application.Restarting()),
+			zap.Int("node", t.ApplicationFlags.Node()),
 			zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)),
 			zap.Any("props", t.ApplicationFlags.Properties()))
 	}
@@ -141,12 +143,17 @@ func (t *implRunNode) Run(args []string) (err error) {
 	logger.Sync()
 
 	if t.Application.Restarting() {
-		logger.Info("ApplicationRestarting")
+		logger.Info("NodeRestarting")
 		err = t.StartNode.Start(logger, true)
 		if err != nil {
-			logger.Error("ApplicationRestart", zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)), zap.Error(err))
+			logger.Error("NodeRestart",
+				zap.Int("node", t.ApplicationFlags.Node()),
+				zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)),
+				zap.Error(err))
 		} else {
-			logger.Info("ApplicationRestarted", zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)))
+			logger.Info("NodeRestarted",
+				zap.Int("node", t.ApplicationFlags.Node()),
+				zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)))
 		}
 	}
 

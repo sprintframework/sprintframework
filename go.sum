@@ -850,8 +850,8 @@ github.com/sprintframework/dns v1.0.0 h1:bPZ8Tf8i2uUcbzkB1Muvl4LTEH/LrLKk/FblDSh
 github.com/sprintframework/dns v1.0.0/go.mod h1:emqUfZVMoelUje5W6ltn7oIZRYgsYVmCZlKQeyirXiQ=
 github.com/sprintframework/nat v1.0.0 h1:UzqkR2gtd9P/B5QDLQanbipA8Mn4FJni0/19zjCNGsk=
 github.com/sprintframework/nat v1.0.0/go.mod h1:WvL6PCteEvWIb4Qp65A67FoQjcOB3bKcJTOXYF4jDFw=
-github.com/sprintframework/sprint v1.3.1 h1:OUVFBhJ/dbgom4uoK831lE6rvGNf361cKL2w+xt/hAs=
-github.com/sprintframework/sprint v1.3.1/go.mod h1:ssu7bTol76CG/yAEa2kDU990+4j3kNTCsGvowbIo6+I=
+github.com/sprintframework/sprint v1.3.2 h1:VaRoqAJx0mxg4QR+jA232vnK78ngkhcG0YfjUv2U18A=
+github.com/sprintframework/sprint v1.3.2/go.mod h1:ssu7bTol76CG/yAEa2kDU990+4j3kNTCsGvowbIo6+I=
 github.com/sprintframework/sprintpb v1.3.0 h1:QVdhSOprZWwgXhu9aBiNHBlnl42SflaU+MX5e24+yKo=
 github.com/sprintframework/sprintpb v1.3.0/go.mod h1:Cuk1DcfvNYTjWJ2xqutDZmRmhwN+FRrAYGkV5dT8mio=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
