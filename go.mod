@@ -32,6 +32,7 @@ require (
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
+	github.com/keyvalstore/bboltstore v1.3.0
 	github.com/keyvalstore/boltstore v1.3.0
 	github.com/keyvalstore/cachestore v1.3.0
 	github.com/sprintframework/sprintpb v1.3.0
@@ -59,6 +60,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sprintframework/certpb v1.0.0 // indirect
+	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/oauth2 v0.9.0 // indirect
