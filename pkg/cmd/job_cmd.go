@@ -13,22 +13,22 @@ import (
 	"strings"
 )
 
-type implJobCommand struct {
+type implJobsCommand struct {
 	Application sprint.Application `inject`
 	Context glue.Context `inject`
 }
 
-func JobCommand() sprint.Command {
-	return &implJobCommand{}
+func JobsCommand() sprint.Command {
+	return &implJobsCommand{}
 }
 
-func (t *implJobCommand) BeanName() string {
-	return "job"
+func (t *implJobsCommand) BeanName() string {
+	return "jobs"
 }
 
-func (t *implJobCommand) Help() string {
+func (t *implJobsCommand) Help() string {
 	helpText := `
-Usage: ./%s job [command]
+Usage: ./%s jobs [command]
 
 	Provides management functionality for scheduled jobs.
 
@@ -44,11 +44,11 @@ Commands:
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
 }
 
-func (t *implJobCommand) Synopsis() string {
-	return "job management - [list, run, cancel]"
+func (t *implJobsCommand) Synopsis() string {
+	return "jobs management - [list, run, cancel]"
 }
 
-func (t *implJobCommand) Run(args []string) error {
+func (t *implJobsCommand) Run(args []string) error {
 
 	if len(args) < 1 {
 		return errors.Errorf("job command needs argument: %s",  t.Synopsis())

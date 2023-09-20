@@ -16,7 +16,7 @@ var DefaultCommands = []interface{}{
 	StatusCommand(),
 	RestartCommand(),
 	StorageCommand(),
-	JobCommand(),
+	JobsCommand(),
 	KeygenCommand(),
 	RunCommand(),
 	StartCommand(),
