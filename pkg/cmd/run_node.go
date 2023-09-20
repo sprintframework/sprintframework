@@ -7,23 +7,22 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"go.uber.org/zap"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
-type implRunCommand struct {
+type implRunNode struct {
 	Application                       sprint.Application                       `inject`
 	ApplicationFlags                  sprint.ApplicationFlags                  `inject`
 	SystemEnvironmentPropertyResolver sprint.SystemEnvironmentPropertyResolver `inject`
-	Context                           glue.Context                          `inject`
-	StartCommand                      *implStartCommand                       `inject`
+	Context                           glue.Context                             `inject`
+	StartNode                         *implStartNode                           `inject`
 	CoreScanner                       sprint.CoreScanner                       `inject`
 
 	LogDir         string        `value:"application.log.dir,default="`
@@ -35,29 +34,11 @@ type implRunCommand struct {
 	logWriter   io.Writer
 }
 
-func RunCommand() sprint.Command {
-	return &implRunCommand{}
+func RunNode() *implRunNode {
+	return &implRunNode{}
 }
 
-func (t *implRunCommand) BeanName() string {
-	return "run"
-}
-
-func (t *implRunCommand) Help() string {
-	helpText := `
-Usage: ./%s run
-
-	Runs the application node.
-
-`
-	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
-}
-
-func (t *implRunCommand) Synopsis() string {
-	return "run node"
-}
-
-func (t *implRunCommand) createLogFile() (string, error) {
+func (t *implRunNode) createLogFile() (string, error) {
 
 	logDir := t.LogDir
 	if logDir == "" {
@@ -74,7 +55,7 @@ func (t *implRunCommand) createLogFile() (string, error) {
 	return logFile, nil
 }
 
-func (t *implRunCommand) lazyStartupLog() *log.Logger {
+func (t *implRunNode) lazyStartupLog() *log.Logger {
 	var err error
 	if t.startupLog == nil {
 
@@ -102,14 +83,14 @@ func (t *implRunCommand) lazyStartupLog() *log.Logger {
 	return t.startupLog
 }
 
-func (t *implRunCommand) Destroy() error {
+func (t *implRunNode) Destroy() error {
 	if t.logFile != nil {
 		return t.logFile.Close()
 	}
 	return nil
 }
 
-func (t *implRunCommand) Run(args []string) (err error) {
+func (t *implRunNode) Run(args []string) (err error) {
 
 	beans := t.CoreScanner.CoreBeans()
 	if t.ApplicationFlags.Verbose() {
@@ -161,7 +142,7 @@ func (t *implRunCommand) Run(args []string) (err error) {
 
 	if t.Application.Restarting() {
 		logger.Info("ApplicationRestarting")
-		err = t.StartCommand.Start(logger, true)
+		err = t.StartNode.Start(logger, true)
 		if err != nil {
 			logger.Error("ApplicationRestart", zap.Strings("env", t.SystemEnvironmentPropertyResolver.Environ(false)), zap.Error(err))
 		} else {

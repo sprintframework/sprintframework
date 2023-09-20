@@ -23,7 +23,7 @@ import (
 	"syscall"
 )
 
-type implStartCommand struct {
+type implStartNode struct {
 	Application                       sprint.Application                       `inject`
 	ApplicationFlags                  sprint.ApplicationFlags                  `inject`
 	Properties                        glue.Properties                       `inject`
@@ -39,26 +39,8 @@ type implStartCommand struct {
 	PidFilePerm      os.FileMode  `value:"application.perm.pid.file,default=-rw-rw-rw-"`
 }
 
-func StartCommand() sprint.Command {
-	return &implStartCommand{}
-}
-
-func (t *implStartCommand) BeanName() string {
-	return "start"
-}
-
-func (t *implStartCommand) Help() string {
-	helpText := `
-Usage: ./%s start
-
-	Starts the application node in background mode.
-
-`
-	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
-}
-
-func (t *implStartCommand) Synopsis() string {
-	return "start server"
+func StartNode() *implStartNode {
+	return &implStartNode{}
 }
 
 func NewMinimalConfig() zap.Config {
@@ -70,7 +52,7 @@ func NewMinimalConfig() zap.Config {
 	}
 }
 
-func (t *implStartCommand) Run(args []string) error {
+func (t *implStartNode) Run(args []string) error {
 
 	logger, err := NewMinimalConfig().Build()
 	if err != nil {
@@ -87,7 +69,7 @@ func (t *implStartCommand) Run(args []string) error {
 	return t.Start(logger, false)
 }
 
-func (t *implStartCommand) Start(logger *zap.Logger, restart bool) error {
+func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 
 	runDir := t.RunDir
 	if runDir == "" {
@@ -205,7 +187,7 @@ func (t *implStartCommand) Start(logger *zap.Logger, restart bool) error {
 	return err
 }
 
-func (t *implStartCommand) executableNext(current string) string {
+func (t *implStartNode) executableNext(current string) string {
 
 	name := t.Application.Name()
 	odd := fmt.Sprintf(".%s.odd", name)

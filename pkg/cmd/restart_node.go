@@ -12,20 +12,20 @@ import (
 	"strings"
 )
 
-type implRestartCommand struct {
+type implRestartNode struct {
 	Application      sprint.Application      `inject`
 	Context glue.Context `inject`
 }
 
-func RestartCommand() sprint.Command {
-	return &implRestartCommand{}
+func RestartNode() *implRestartNode {
+	return &implRestartNode{}
 }
 
-func (t *implRestartCommand) BeanName() string {
+func (t *implRestartNode) BeanName() string {
 	return "restart"
 }
 
-func (t *implRestartCommand) Help() string {
+func (t *implRestartNode) Help() string {
 	helpText := `
 Usage: ./%s restart
 
@@ -35,11 +35,11 @@ Usage: ./%s restart
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
 }
 
-func (t *implRestartCommand) Synopsis() string {
+func (t *implRestartNode) Synopsis() string {
 	return "restart server"
 }
 
-func (t *implRestartCommand) Run(args []string) error {
+func (t *implRestartNode) Run(args []string) error {
 
 	return sprint.DoWithControlClient(t.Context, func(client sprint.ControlClient) error {
 		status, err := client.Shutdown(true)

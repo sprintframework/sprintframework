@@ -7,18 +7,17 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
-	"strings"
 )
 
-type implStopCommand struct {
+type implStopNode struct {
 	Application      sprint.Application      `inject`
 	ApplicationFlags sprint.ApplicationFlags `inject`
 	Context          glue.Context         `inject`
@@ -26,29 +25,11 @@ type implStopCommand struct {
 	RunDir           string       `value:"application.run.dir,default="`
 }
 
-func StopCommand() sprint.Command {
-	return &implStopCommand{}
+func StopNode() *implStopNode {
+	return &implStopNode{}
 }
 
-func (t *implStopCommand) BeanName() string {
-	return "stop"
-}
-
-func (t *implStopCommand) Help() string {
-	helpText := `
-Usage: ./%s stop
-
-	Stops the running node application.
-
-`
-	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
-}
-
-func (t *implStopCommand) Synopsis() string {
-	return "stop node"
-}
-
-func (t *implStopCommand) Run(args []string) error {
+func (t *implStopNode) Run(args []string) error {
 
 	err := sprint.DoWithControlClient(t.Context, func(client sprint.ControlClient) error {
 		status, err := client.Shutdown(false)
@@ -65,7 +46,7 @@ func (t *implStopCommand) Run(args []string) error {
 	return nil
 }
 
-func (t *implStopCommand) KillServer() error {
+func (t *implStopNode) KillServer() error {
 
 	runDir := t.RunDir
 	if runDir == "" {
