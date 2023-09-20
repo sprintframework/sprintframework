@@ -100,10 +100,18 @@ func (t *implGrpcServer) Serve() (err error) {
 
 	defer util.PanicToError(&err)
 
-	t.Log.Info("GrpcServerServe",
-		zap.String("addr", t.ListenAddress().String()),
-		zap.String("network", t.ListenAddress().Network()),
-		zap.Bool("tls", t.TlsConfig != nil))
+	if t.TlsConfig != nil {
+		t.Log.Info("GrpcServerServe",
+			zap.String("addr", t.ListenAddress().String()),
+			zap.String("network", t.ListenAddress().Network()),
+			zap.Bool("tls", true),
+			zap.Bool("insecure", t.TlsConfig.InsecureSkipVerify))
+	} else {
+		t.Log.Info("GrpcServerServe",
+			zap.String("addr", t.ListenAddress().String()),
+			zap.String("network", t.ListenAddress().Network()),
+			zap.Bool("tls", false))
+	}
 
 	t.running.Store(true)
 	err = t.srv.Serve(t.listener)

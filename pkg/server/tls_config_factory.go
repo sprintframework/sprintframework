@@ -18,8 +18,8 @@ import (
 
 type implTlsConfigFactory struct {
 
-	Properties  glue.Properties `inject`
-	NodeService sprint.NodeService `inject`
+	Properties     glue.Properties      `inject`
+	NodeService    sprint.NodeService   `inject`
 
 	CertificateManager cert.CertificateManager `inject:"optional"`
 

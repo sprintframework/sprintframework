@@ -17,11 +17,14 @@ control-gateway-server:
 
 redirect-https:
   listen-address: ":8080"
-  redirect-address: ":8443"
+  redirect-address: "127.0.0.1:8443"
   options: "pages"
 
 lumberjack:
   rotate-on-start: true
 
 tls-config:
+  insecure: true
+
+client-tls-config:
   insecure: true

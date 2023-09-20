@@ -49,14 +49,14 @@ func doMain() (err error) {
 		app.Server(server.GrpcServerScanner("control-grpc-server",
 			server.ControlServer(),
 			server.HttpServerFactory("control-gateway-server"),
-			server.TlsConfigFactory("tls-config"),
+			//server.TlsConfigFactory("tls-config"),
 			server.TemplatePage("/", "resources:templates/index.tmpl"),
 			)),
 		app.Server(server.HttpServerScanner("redirect-https", server.RedirectHttpsPage("redirect-https"))),
 		app.Client(client.ClientScanner("control",
 			client.GrpcClientFactory("control-grpc-client"),
 			client.ControlClient(),
-			client.AnyTlsConfigFactory("tls-config"),
+			//client.AnyTlsConfigFactory("client-tls-config"),
 			)),
 		).
 		Run(os.Args[1:])

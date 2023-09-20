@@ -83,10 +83,18 @@ func (t *implHttpServer) Serve() (err error) {
 
 	defer util.PanicToError(&err)
 
-	t.Log.Info("HttpServerServe",
-		zap.String("addr", t.ListenAddress().String()),
-		zap.String("network", t.ListenAddress().Network()),
-		zap.Bool("tls", t.srv.TLSConfig != nil))
+	if t.srv.TLSConfig != nil {
+		t.Log.Info("HttpServerServe",
+			zap.String("addr", t.ListenAddress().String()),
+			zap.String("network", t.ListenAddress().Network()),
+			zap.Bool("tls", true),
+			zap.Bool("insecure", t.srv.TLSConfig.InsecureSkipVerify))
+	} else {
+		t.Log.Info("HttpServerServe",
+			zap.String("addr", t.ListenAddress().String()),
+			zap.String("network", t.ListenAddress().Network()),
+			zap.Bool("tls", false))
+	}
 
 	t.running.Store(true)
 	if t.srv.TLSConfig != nil {

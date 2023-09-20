@@ -7,11 +7,14 @@ package client
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
-	"github.com/sprintframework/sprintpb"
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintpb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"io"
 	"sort"
 	"strings"
@@ -19,7 +22,9 @@ import (
 )
 
 type implControlClient struct {
-	GrpcConn   *grpc.ClientConn                `inject`
+	GrpcConn   *grpc.ClientConn         `inject`
+	TlsConfig   *tls.Config             `inject:"optional"`
+
 	client     sprintpb.ControlServiceClient
 	closeOnce  sync.Once
 }
@@ -45,10 +50,24 @@ func (t *implControlClient) Destroy() (err error) {
 	return
 }
 
+func (t *implControlClient) wrapError(err error) error {
+	var protocol string
+	if t.TlsConfig != nil {
+		if t.TlsConfig.InsecureSkipVerify {
+			protocol = "tls insecure"
+		} else {
+			protocol = "tls"
+		}
+	} else {
+		protocol = "plain"
+	}
+	return status.Errorf(codes.Unavailable, "grpc %s invocation '%s', %v", protocol, t.GrpcConn.Target(), err)
+}
+
 func (t *implControlClient) Status() (string, error) {
 
 	if resp, err := t.client.Status(context.Background(), new(sprintpb.StatusRequest)); err != nil {
-		return "", err
+		return "", t.wrapError(err)
 	} else {
 
 		var out strings.Builder
@@ -79,7 +98,7 @@ func (t *implControlClient) Shutdown(restart bool) (string, error) {
 	}
 
 	if resp, err := t.client.Node(context.Background(), req); err != nil {
-		return "", err
+		return "", t.wrapError(err)
 	} else {
 		return resp.Content, nil
 	}
@@ -93,7 +112,7 @@ func (t *implControlClient) ConfigCommand(command string, args []string) (string
 	}
 
 	if resp, err := t.client.Config(context.Background(), req); err != nil {
-		return "", err
+		return "", t.wrapError(err)
 	} else {
 		return resp.Content, nil
 	}
@@ -107,7 +126,7 @@ func (t *implControlClient) CertificateCommand(command string, args []string) (s
 	}
 
 	if resp, err := t.client.Certificate(context.Background(), req); err != nil {
-		return "", err
+		return "", t.wrapError(err)
 	} else {
 		return resp.Content, nil
 	}
@@ -121,7 +140,7 @@ func (t *implControlClient) JobCommand(command string, args []string) (string, e
 	}
 
 	if resp, err := t.client.Job(context.Background(), req); err != nil {
-		return "", err
+		return "", t.wrapError(err)
 	} else {
 		return resp.Content, nil
 	}
@@ -136,7 +155,7 @@ func (t *implControlClient) StorageCommand(command string, args []string) (strin
 	}
 
 	if resp, err := t.client.Storage(context.Background(), req); err != nil {
-		return "", err
+		return "", t.wrapError(err)
 	} else {
 		return resp.Content, nil
 	}
@@ -147,7 +166,7 @@ func (t *implControlClient) StorageConsole(writer io.StringWriter, errWriter io.
 
 	stream, err := t.client.StorageConsole(context.Background())
 	if err != nil {
-		return err
+		return t.wrapError(err)
 	}
 
 	barrier := make(chan int, 1)

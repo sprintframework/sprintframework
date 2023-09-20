@@ -14,6 +14,7 @@ import (
 	"github.com/sprintframework/sprintframework/pkg/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"reflect"
 	"strings"
 )
@@ -23,7 +24,7 @@ type implGrpcClientFactory struct {
 	Application       sprint.Application       `inject`
 	ApplicationFlags  sprint.ApplicationFlags  `inject`
 	Properties        glue.Properties          `inject`
-	TlsConfig   *tls.Config       `inject:"optional"`
+	TlsConfig         *tls.Config              `inject:"optional"`
 
 	beanName string
 }
@@ -80,16 +81,19 @@ func (t *implGrpcClientFactory) getConnectAddress(listenAddr string) string {
 	return listenAddr
 }
 
+func (t *implGrpcClientFactory) getTransportCreds() credentials.TransportCredentials {
+	if t.TlsConfig != nil {
+		return credentials.NewTLS(t.TlsConfig)
+	} else {
+		return insecure.NewCredentials()
+	}
+}
+
 func (t *implGrpcClientFactory) doDial(connectAddr string) (*grpc.ClientConn, error) {
 
 	var opts []grpc.DialOption
 
-	if t.TlsConfig != nil {
-		tlsCredentials := credentials.NewTLS(t.TlsConfig)
-		opts = append(opts, grpc.WithTransportCredentials(tlsCredentials))
-	} else {
-		opts = append(opts, grpc.WithInsecure())
-	}
+	opts = append(opts, grpc.WithTransportCredentials(t.getTransportCreds()))
 
 	maxMessageSize := t.Properties.GetInt(fmt.Sprintf("%s.max.message.size", t.beanName), 0)
 	if maxMessageSize != 0 {
