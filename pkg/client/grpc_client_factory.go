@@ -20,8 +20,9 @@ import (
 
 type implGrpcClientFactory struct {
 
-	Application sprint.Application `inject`
-	Properties  glue.Properties `inject`
+	Application       sprint.Application       `inject`
+	ApplicationFlags  sprint.ApplicationFlags  `inject`
+	Properties        glue.Properties          `inject`
 	TlsConfig   *tls.Config       `inject:"optional"`
 
 	beanName string
@@ -47,6 +48,11 @@ func (t *implGrpcClientFactory) Object() (object interface{}, err error) {
 			return nil, errors.Errorf("property '%s.connect-address' is not found and property '%s.listen-address' is not found too'", t.beanName, serverBean)
 		}
 		connectAddr = t.getConnectAddress(grpcListenAddr)
+	}
+
+	connectAddr, err = util.AdjustPortNumberInAddress(connectAddr, t.ApplicationFlags.Node())
+	if err != nil {
+		return
 	}
 
 	return t.doDial(connectAddr)

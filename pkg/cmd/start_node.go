@@ -75,7 +75,7 @@ func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 	if runDir == "" {
 		runDir = filepath.Join(t.Application.ApplicationDir(), "run")
 	}
-	pidFile := filepath.Join(runDir, fmt.Sprintf("%s.pid", t.Application.Name()))
+	pidFile := filepath.Join(runDir, fmt.Sprintf("%s.pid", t.getNodeName()))
 
 	if _, err := os.Stat(runDir); err != nil {
 		if err = os.MkdirAll(runDir, t.RunDirPerm); err != nil {
@@ -189,7 +189,7 @@ func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 
 func (t *implStartNode) executableNext(current string) string {
 
-	name := t.Application.Name()
+	name := t.getNodeName()
 	odd := fmt.Sprintf(".%s.odd", name)
 	even := fmt.Sprintf(".%s.even", name)
 
@@ -199,6 +199,10 @@ func (t *implStartNode) executableNext(current string) string {
 		return odd
 	}
 
+}
+
+func (t *implStartNode) getNodeName() string {
+	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
 }
 
 func User() string {

@@ -116,6 +116,7 @@ func (t *implHttpServerFactory) Object() (object interface{}, err error) {
 
 	t.Log.Info("HTTPServerFactory",
 		zap.String("listenAddr", listenAddr),
+		zap.String("bean", t.beanName),
 		zap.Strings("pages", pageList),
 		zap.Strings("assets", assetList),
 		zap.Any("options", options),

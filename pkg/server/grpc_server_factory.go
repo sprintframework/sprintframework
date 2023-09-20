@@ -6,6 +6,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/codeallergy/glue"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/sprintframework/sprint"
@@ -16,6 +17,8 @@ import (
 )
 
 type implGrpcServerFactory struct {
+
+	Properties              glue.Properties               `inject`
 	Log                     *zap.Logger                   `inject`
 	AuthorizationMiddleware sprint.AuthorizationMiddleware `inject`
 
@@ -29,6 +32,12 @@ func GrpcServerFactory(beanName string) glue.FactoryBean {
 func (t *implGrpcServerFactory) Object() (object interface{}, err error) {
 
 	defer util.PanicToError(&err)
+
+	listenAddr := t.Properties.GetString( fmt.Sprintf("%s.%s", t.beanName, "listen-address"), "")
+
+	t.Log.Info("GrpcServerFactory",
+		zap.String("listenAddr", listenAddr),
+		zap.String("bean", t.beanName))
 
 	srv, err := t.createServer()
 	if err != nil {

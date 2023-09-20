@@ -10,6 +10,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -52,7 +53,7 @@ func (t *implStopNode) KillServer() error {
 	if runDir == "" {
 		runDir = filepath.Join(t.Application.ApplicationDir(), "run")
 	}
-	pidFile := filepath.Join(runDir, fmt.Sprintf("%s.pid", t.Application.Name()))
+	pidFile := filepath.Join(runDir, fmt.Sprintf("%s.pid", t.getNodeName()))
 
 	blob, err := ioutil.ReadFile(pidFile)
 	if err != nil {
@@ -76,4 +77,8 @@ func (t *implStopNode) KillServer() error {
 
 	return cmd.Wait()
 
+}
+
+func (t *implStopNode) getNodeName() string {
+	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
 }

@@ -9,7 +9,7 @@ secure-storage:
   split-key-value: false
 
 control-grpc-server:
-  listen-address: ":8444"
+  listen-address: ":8543"
 
 control-gateway-server:
   listen-address: ":8443"
