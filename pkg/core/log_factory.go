@@ -60,15 +60,18 @@ func (t *implLogFactory) Object() (object interface{}, err error) {
 			if logDir == "" {
 				logDir = filepath.Join(t.Application.ApplicationDir(), "log")
 			}
-			logFile := fmt.Sprintf("%s.log", t.getNodeName())
 
-			if _, err := os.Stat(logDir); err != nil {
-				if err = os.MkdirAll(logDir, t.LogDirPerm); err != nil {
-					return nil, err
-				}
+			if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+				return nil, err
 			}
 
-			logFile = filepath.Join(logDir, logFile)
+			logDir = filepath.Join(logDir, t.getNodeName())
+
+			if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+				return nil, err
+			}
+
+			logFile := filepath.Join(logDir, fmt.Sprintf("%s.log", t.Application.Name()) )
 
 			if err := util.CreateFileIfNeeded(logFile, t.LogFilePerm); err != nil {
 				return nil, err

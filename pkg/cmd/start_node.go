@@ -7,8 +7,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/zap"
@@ -30,8 +30,8 @@ type implStartNode struct {
 	Registrars                        []sprint.FlagSetRegistrar                `inject`
 	SystemEnvironmentPropertyResolver sprint.SystemEnvironmentPropertyResolver `inject`
 
-	BootstrapTokens   []string  `value:"application.bootstrap-tokens,default="`
-	Autoupdate         bool     `value:"application.autoupdate,default=false"`
+	BootstrapTokens   []string    `value:"application.bootstrap-tokens,default="`
+	Autoupdate         bool       `value:"application.autoupdate,default=false"`
 
 	RunDir           string       `value:"application.run.dir,default="`
 	RunDirPerm       os.FileMode  `value:"application.perm.run.dir,default=-rwxrwxr-x"`
@@ -77,10 +77,8 @@ func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 	}
 	pidFile := filepath.Join(runDir, fmt.Sprintf("%s.pid", t.getNodeName()))
 
-	if _, err := os.Stat(runDir); err != nil {
-		if err = os.MkdirAll(runDir, t.RunDirPerm); err != nil {
-			return err
-		}
+	if err := util.CreateDirIfNeeded(runDir, t.RunDirPerm); err != nil {
+		return err
 	}
 
 	_, err := os.Stat(pidFile)
@@ -118,7 +116,7 @@ func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 		nextExePath = executable
 	}
 
-	logger.Info("ApplicationStart", zap.String("exePath", nextExePath), zap.String("username", User()), zap.Bool("autoupdate", t.Autoupdate))
+	logger.Info("NodeStart", zap.String("exePath", nextExePath), zap.String("username", User()), zap.Bool("autoupdate", t.Autoupdate))
 
 	var updateOnStart bool
 	var autoupdatePath string
@@ -158,10 +156,12 @@ func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 	args = append(args, "run")
 	cmd := exec.Command(nextExePath, args...)
 	cmd.Env = append(os.Environ(), t.SystemEnvironmentPropertyResolver.Environ(true)...)
-	logger.Info("Run", zap.String("binary", nextExePath), zap.Strings("args", args))
 
 	if err := cmd.Start(); err != nil {
+		logger.Error("Run",  zap.String("binary", nextExePath), zap.Strings("args", args), zap.Error(err))
 		return err
+	} else {
+		logger.Info("Run", zap.String("binary", nextExePath), zap.Strings("args", args))
 	}
 
 	logger.Info("Daemon", zap.Int("pid", cmd.Process.Pid))

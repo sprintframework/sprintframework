@@ -10,11 +10,13 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/zap"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 type implRunNode struct {
@@ -29,9 +31,10 @@ type implRunNode struct {
 	LogDirPerm     os.FileMode   `value:"application.perm.log.dir,default=-rwxrwxr-x"`
 	LogFilePerm    os.FileMode   `value:"application.perm.log.file,default=-rw-rw-r--"`
 
-	startupLog  *log.Logger
-	logFile     *os.File
-	logWriter   io.Writer
+	mutex     sync.Mutex
+	startLog  *log.Logger
+	logFile   *os.File
+	logWriter io.Writer
 }
 
 func RunNode() *implRunNode {
@@ -45,42 +48,50 @@ func (t *implRunNode) createLogFile() (string, error) {
 		logDir = filepath.Join(t.Application.ApplicationDir(), "log")
 	}
 
-	if _, err := os.Stat(logDir); err != nil {
-		if err = os.MkdirAll(logDir, t.LogDirPerm); err != nil {
-			return "", err
-		}
+	if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+		return "", err
 	}
 
-	logFile := fmt.Sprintf("%s-startup.log", t.Application.Name())
+	logDir = filepath.Join(logDir, t.getNodeName())
+
+	if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+		return "", err
+	}
+
+	logFile := filepath.Join(logDir, fmt.Sprintf("%s-start.log", t.Application.Name()) )
 	return logFile, nil
 }
 
-func (t *implRunNode) lazyStartupLog() *log.Logger {
-	var err error
-	if t.startupLog == nil {
+func (t *implRunNode) lazyStartLog() *log.Logger {
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
 
-		t.logWriter = os.Stdout
+	var err error
+	if t.startLog == nil {
+
+		t.logWriter = os.Stderr
 
 		if t.ApplicationFlags.Daemon() {
 			var fileName string
 			fileName, err = t.createLogFile()
-			if err == nil {
+			if err != nil {
+				fmt.Printf("Error: start log file name creation error, %v\n", err)
+			} else {
 				t.logFile, err = os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, t.LogFilePerm)
-				if err == nil {
+				if err != nil {
+					fmt.Printf("Error: start log file '%s' creation error, %v\n", fileName, err)
+				} else {
 					t.logWriter = t.logFile
 				}
 			}
 		}
 
-		t.startupLog = log.New(t.logWriter,
+		t.startLog = log.New(t.logWriter,
 			"ERROR: ",
 			log.Ldate|log.Ltime|log.Lshortfile)
 
-		if err != nil {
-			t.startupLog.Printf("Startup log file creation error, %v\n", err)
-		}
 	}
-	return t.startupLog
+	return t.startLog
 }
 
 func (t *implRunNode) Destroy() error {
@@ -94,14 +105,14 @@ func (t *implRunNode) Run(args []string) (err error) {
 
 	beans := t.CoreScanner.CoreBeans()
 	if t.ApplicationFlags.Verbose() {
-		verbose := glue.Verbose{ Log: t.lazyStartupLog() }
+		verbose := glue.Verbose{ Log: t.lazyStartLog() }
 		beans = append([]interface{}{verbose}, beans...)
 	}
 
 	core, err := t.Context.Extend(beans...)
 	if err != nil {
 		msg := fmt.Sprintf("core creation context failed by %v, used environment variables %+v", err, t.SystemEnvironmentPropertyResolver.Environ(false))
-		t.lazyStartupLog().Println(msg)
+		t.lazyStartLog().Println(msg)
 		return errors.New(msg)
 	}
 
@@ -158,6 +169,10 @@ func (t *implRunNode) Run(args []string) (err error) {
 	}
 
 	return
+}
+
+func (t *implRunNode) getNodeName() string {
+	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
 }
 
 func findZapLogger(core glue.Context) (*zap.Logger, bool) {

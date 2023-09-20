@@ -42,15 +42,17 @@ func (t *implLumberjackFactory) Object() (object interface{}, err error) {
 	if logDir == "" {
 		logDir = filepath.Join(t.Application.ApplicationDir(), "log")
 	}
-	logFile := fmt.Sprintf("%s.log", t.getNodeName())
 
-	if _, err := os.Stat(logDir); err != nil {
-		if err = os.MkdirAll(logDir, t.LogDirPerm); err != nil {
-			return nil, err
-		}
+	if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+		return nil, err
+	}
+	logDir = filepath.Join(logDir, t.getNodeName())
+
+	if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+		return nil, err
 	}
 
-	logFile = filepath.Join(logDir, logFile)
+	logFile := filepath.Join(logDir, fmt.Sprintf("%s.log", t.Application.Name()) )
 	if err := util.CreateFileIfNeeded(logFile, t.LogFilePerm); err != nil {
 		return nil, err
 	}
@@ -63,11 +65,17 @@ func (t *implLumberjackFactory) Object() (object interface{}, err error) {
 		Compress:   t.Compress,
 	}
 
-	if t.Rotate {
-		return instance, instance.Rotate()
-	} else {
-		return instance, nil
+	if t.Rotate && t.ApplicationFlags.Daemon() {
+		// rotate only non empty log file
+		if fi, err := os.Stat(logFile); err == nil && fi.Size() > 0 {
+			err = instance.Rotate()
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
+
+	return instance, nil
 
 }
 

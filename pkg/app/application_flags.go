@@ -9,6 +9,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/sprintframework/sprint"
+	"strconv"
 	"strings"
 )
 
@@ -98,6 +99,11 @@ func (t *implApplicationFlags) RegisterServerArgs(args []string) []string {
 
 	if t.Verbose() {
 		args = append(args, "-v")
+	}
+
+	node := t.Node()
+	if node > 0 {
+		args = append(args, "-n", strconv.Itoa(node))
 	}
 
 	for k, v := range t.properties {
