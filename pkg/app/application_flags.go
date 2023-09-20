@@ -12,12 +12,42 @@ import (
 	"strings"
 )
 
+/**
+	Application Flags bean implementation.
+
+	All applications have those flags but can add their own.
+ */
+
 type implApplicationFlags struct {
 
+	/**
+	Daemon flag indicates that process is running in background mode.
+	 */
+	daemon     *bool
+
+	/**
+	Verbose flag enables additional logging for injection of the beans to console.
+	 */
+
+	verbose    *bool
+
+	/**
+	Sequence number of the running node.
+	If this value greater than zero, then additional suffix would be added to disk directories
+	and all listening port numbers would be incremented on it.
+	Default value is 0.
+	 */
+	node       *int
+
+	/**
+	Priority is using to order all properties and put flags on top of the list.
+	Bigger number indicates higher priority.
+	*/
 	priority int
 
-	daemon     *bool
-	verbose    *bool
+	/**
+	Overrides properties through priority list in the form of key=value pairs.
+	 */
 
 	properties  keyValueFlags
 
@@ -60,7 +90,8 @@ func (t *implApplicationFlags) String() string {
 func (t *implApplicationFlags) RegisterFlags(fs *flag.FlagSet) {
 	t.daemon = fs.Bool("d", false, "Run as daemon")
 	t.verbose = fs.Bool("v", false, "Verbose debug information")
-	fs.Var(&t.properties, "p", "Application override properties key=value")
+	t.node = fs.Int("n", 0, "Sequence number of node")
+	fs.Var(&t.properties, "p", "Override properties by key=value")
 }
 
 func (t *implApplicationFlags) RegisterServerArgs(args []string) []string {
@@ -92,12 +123,19 @@ func (t *implApplicationFlags) Verbose() bool {
 	return false
 }
 
-func (t *implApplicationFlags) Properties() map[string]string {
-	return t.properties
+func (t *implApplicationFlags) Node() int {
+	if t.node != nil {
+		return *t.node
+	}
+	return 0
 }
 
 func (t *implApplicationFlags) Priority() int {
 	return t.priority
+}
+
+func (t *implApplicationFlags) Properties() map[string]string {
+	return t.properties
 }
 
 func (t *implApplicationFlags) GetProperty(key string) (value string, ok bool) {

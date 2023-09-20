@@ -66,7 +66,7 @@ func (t *implHelpCommand) Run(args []string) error {
 	}
 
 
-	fmt.Println("Flags:")
+	fmt.Println("\nFlags:")
 	t.FlagSet.PrintDefaults()
 	return nil
 }
