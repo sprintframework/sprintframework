@@ -257,7 +257,6 @@ func (t *application) Run(args []string) (err error) {
 	propertyMap := &glue.PropertySource{ Map: map[string]interface{} {
 		"application": map[string]interface{} {
 			"name": t.applicationName,
-			"node": util.FormatNodeName(t.applicationName, dep.ApplicationFlags.Node()),
 			"version": t.applicationVersion,
 			"build": t.applicationBuild,
 			"profile": t.applicationProfile,

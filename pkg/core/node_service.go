@@ -32,6 +32,7 @@ type implNodeService struct {
 	nodeIdHex string
 	nodeId    uint64
 	nodeName  string
+	nodeSeq   int
 
 	lastTimestamp atomic.Int64
 	clock         atomic.Int32
@@ -68,6 +69,7 @@ func (t *implNodeService) PostConstruct() (err error) {
 	defer util.PanicToError(&err)
 
 	t.nodeName = util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+	t.nodeSeq = t.ApplicationFlags.Node()
 
 	t.nodeIdHex = t.Properties.GetString("node.id", "")
 	if t.nodeIdHex == "" {
@@ -94,6 +96,10 @@ func (t *implNodeService) NodeIdHex() string {
 
 func (t *implNodeService) NodeName() string {
 	return t.nodeName
+}
+
+func (t *implNodeService) NodeSeq() int {
+	return t.nodeSeq
 }
 
 func (t *implNodeService) Issue() uuid.UUID {

@@ -19,7 +19,9 @@ import (
 
 type implHttpServer struct {
 
-	Log       *zap.Logger              `inject`
+	Log       *zap.Logger                 `inject`
+
+	NodeService    sprint.NodeService     `inject`
 
 	srv       *http.Server
 	listener  net.Listener
@@ -37,6 +39,11 @@ func (t *implHttpServer) PostConstruct() error {
 }
 
 func (t *implHttpServer) Bind() (err error) {
+
+	t.srv.Addr, err = util.AdjustPortNumberInAddress(t.srv.Addr, t.NodeService.NodeSeq())
+	if err != nil {
+		return err
+	}
 
 	t.listener, err = net.Listen("tcp4", t.srv.Addr)
 	if err != nil {
@@ -76,7 +83,10 @@ func (t *implHttpServer) Serve() (err error) {
 
 	defer util.PanicToError(&err)
 
-	t.Log.Info("HttpServerServe", zap.String("addr", t.srv.Addr), zap.Bool("tls", t.srv.TLSConfig != nil))
+	t.Log.Info("HttpServerServe",
+		zap.String("addr", t.ListenAddress().String()),
+		zap.String("network", t.ListenAddress().Network()),
+		zap.Bool("tls", t.srv.TLSConfig != nil))
 
 	t.running.Store(true)
 	if t.srv.TLSConfig != nil {

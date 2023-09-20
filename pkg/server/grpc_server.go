@@ -25,6 +25,8 @@ type implGrpcServer struct {
 	Log                *zap.Logger               `inject`
 	TlsConfig          *tls.Config               `inject:"optional"`
 
+	NodeService        sprint.NodeService        `inject`
+
 	beanName        string
 	listenAddr      string
 
@@ -49,6 +51,11 @@ func (t *implGrpcServer) Bind() (err error) {
 
 	if t.listenAddr == "" {
 		return errors.Errorf("property '%s.listen-address' not found in server context", t.beanName)
+	}
+
+	t.listenAddr, err = util.AdjustPortNumberInAddress(t.listenAddr, t.NodeService.NodeSeq())
+	if err != nil {
+		return err
 	}
 
 	t.listener, err = net.Listen("tcp4", t.listenAddr)
@@ -93,7 +100,10 @@ func (t *implGrpcServer) Serve() (err error) {
 
 	defer util.PanicToError(&err)
 
-	t.Log.Info("GrpcServerServe", zap.String("addr", t.listenAddr), zap.Bool("tls", t.TlsConfig != nil))
+	t.Log.Info("GrpcServerServe",
+		zap.String("addr", t.ListenAddress().String()),
+		zap.String("network", t.ListenAddress().Network()),
+		zap.Bool("tls", t.TlsConfig != nil))
 
 	t.running.Store(true)
 	err = t.srv.Serve(t.listener)
