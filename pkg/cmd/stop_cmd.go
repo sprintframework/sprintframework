@@ -38,14 +38,14 @@ func (t *implStopCommand) Help() string {
 	helpText := `
 Usage: ./%s stop
 
-	Stops the running server application.
+	Stops the running node application.
 
 `
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
 }
 
 func (t *implStopCommand) Synopsis() string {
-	return "stop server"
+	return "stop node"
 }
 
 func (t *implStopCommand) Run(args []string) error {

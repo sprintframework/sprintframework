@@ -29,14 +29,14 @@ func (t *implStatusCommand) Help() string {
 	helpText := `
 Usage: ./%s status
 
-	Returns the status of running server application.
+	Returns the status of running node application.
 
 `
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
 }
 
 func (t *implStatusCommand) Synopsis() string {
-	return "server status"
+	return "node status"
 }
 
 func (t *implStatusCommand) Run(args []string) error {

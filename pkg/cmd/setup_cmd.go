@@ -38,7 +38,7 @@ func (t *implSetupCommand) Help() string {
 	helpText := `
 Usage: ./%s setup
 
-	Setups the application server for the first time.
+	Setups the application node for the first time.
 
 `
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
@@ -79,6 +79,7 @@ func (t *implSetupCommand) Run(args []string) error {
 			}
 		}
 		secretKey, err = base64.RawURLEncoding.DecodeString(secret)
+		fmt.Printf("JWT secret key %s\n", secretKey)
 		if err != nil {
 			return err
 		}

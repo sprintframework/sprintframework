@@ -51,7 +51,7 @@ func (t *implStartCommand) Help() string {
 	helpText := `
 Usage: ./%s start
 
-	Starts the application server in background mode.
+	Starts the application node in background mode.
 
 `
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))

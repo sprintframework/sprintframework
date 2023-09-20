@@ -29,7 +29,7 @@ func (t *implRestartCommand) Help() string {
 	helpText := `
 Usage: ./%s restart
 
-	Restarts the application server.
+	Restarts the application node.
 
 `
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))

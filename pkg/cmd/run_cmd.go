@@ -47,14 +47,14 @@ func (t *implRunCommand) Help() string {
 	helpText := `
 Usage: ./%s run
 
-	Runs the application server.
+	Runs the application node.
 
 `
 	return strings.TrimSpace(fmt.Sprintf(helpText, t.Application.Executable()))
 }
 
 func (t *implRunCommand) Synopsis() string {
-	return "run server"
+	return "run node"
 }
 
 func (t *implRunCommand) createLogFile() (string, error) {
