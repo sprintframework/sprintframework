@@ -77,18 +77,7 @@ func ControlServer() sprint.Component {
 
 func (t *implGrpcControlServer) PostConstruct() (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	sprintpb.RegisterControlServiceServer(t.GrpcServer, t)
 	reflection.Register(t.GrpcServer)
@@ -202,18 +191,7 @@ func (t *implGrpcControlServer) Node(ctx context.Context, req *sprintpb.Command)
 
 func (t *implGrpcControlServer) Config(ctx context.Context, req *sprintpb.Command) (resp *sprintpb.CommandResult, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	user, ok := t.AuthorizationMiddleware.GetUser(ctx)
 	if !ok {
@@ -342,18 +320,7 @@ func (t *implGrpcControlServer) configList(args []string) (resp *sprintpb.Comman
 
 func (t *implGrpcControlServer) Certificate(ctx context.Context, req *sprintpb.Command) (resp *sprintpb.CommandResult, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	user, ok := t.AuthorizationMiddleware.GetUser(ctx)
 	if !ok {
@@ -392,18 +359,7 @@ func (t *implGrpcControlServer) Certificate(ctx context.Context, req *sprintpb.C
 
 func (t *implGrpcControlServer) Job(ctx context.Context, req *sprintpb.Command) (resp *sprintpb.CommandResult, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	if !t.AuthorizationMiddleware.HasUserRole(ctx, "ADMIN") {
 			return nil, ErrAuthAdminRequired
@@ -420,18 +376,7 @@ func (t *implGrpcControlServer) Job(ctx context.Context, req *sprintpb.Command) 
 
 func (t *implGrpcControlServer) Storage(ctx context.Context, req *sprintpb.Command) (resp *sprintpb.CommandResult, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	if !t.AuthorizationMiddleware.HasUserRole(ctx, "ADMIN") {
 		return nil, ErrAuthAdminRequired
@@ -450,18 +395,7 @@ func (t *implGrpcControlServer) Storage(ctx context.Context, req *sprintpb.Comma
 
 func (t *implGrpcControlServer) StorageConsole(stream sprintpb.ControlService_StorageConsoleServer) (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	if !t.AuthorizationMiddleware.HasUserRole(stream.Context(), "ADMIN") {
 		return ErrAuthAdminRequired

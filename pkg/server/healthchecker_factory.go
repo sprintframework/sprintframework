@@ -8,11 +8,11 @@ package server
 import (
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"reflect"
-	"github.com/pkg/errors"
 )
 
 type implHealthcheckerFactory struct {
@@ -28,18 +28,7 @@ func HealthcheckerFactory(enableServices bool) glue.FactoryBean {
 
 func (t *implHealthcheckerFactory) Object() (object interface{}, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	srv := health.NewServer()
 

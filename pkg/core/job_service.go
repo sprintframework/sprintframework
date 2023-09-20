@@ -9,6 +9,7 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/zap"
 	"strings"
 	"sync"
@@ -63,18 +64,7 @@ func (t *implJobService) CancelJob(name string) error {
 
 func (t *implJobService) RunJob(ctx context.Context, name string) (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	job, err := t.findJob(name)
 	if err != nil {

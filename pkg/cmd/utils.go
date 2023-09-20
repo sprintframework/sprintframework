@@ -7,11 +7,11 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/server"
-	"github.com/pkg/errors"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -104,20 +104,9 @@ func doWithServers(core glue.Context, cb func([]sprint.Server) error) (err error
 
 func runServers(application sprint.Application, flags sprint.ApplicationFlags, core glue.Context, log *zap.Logger) error {
 
-	return doWithServers(core, func(servers []sprint.Server) error {
+	return doWithServers(core, func(servers []sprint.Server) (err error) {
 
-		defer func() {
-			if r := recover(); r != nil {
-				switch v := r.(type) {
-				case error:
-					log.Error("Recover", zap.Error(v))
-				case string:
-					log.Error("Recover", zap.String("error", v))
-				default:
-					log.Error("Recover", zap.String("error", fmt.Sprintf("%v", v)))
-				}
-			}
-		}()
+		defer util.PanicToError(&err)
 
 		if len(servers) == 0 {
 			return errors.New("sprint.Server instances are not found in server context")

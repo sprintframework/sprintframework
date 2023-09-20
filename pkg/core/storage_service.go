@@ -55,18 +55,7 @@ func (t *implStorageService) PostConstruct() error {
 
 func (t *implStorageService) ExecuteQuery(name, query string, cb func(string) bool) (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	s, ok := t.StorageMap[name]
 	if !ok {
@@ -257,18 +246,7 @@ func (t *implStorageService) LocalConsole(writer io.StringWriter, errWriter io.S
 
 func (t *implStorageService) ExecuteCommand(cmd string, args []string) (answer string, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	start := time.Now()
 

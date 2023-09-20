@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	htmlTemplate "html/template"
 	"io/ioutil"
 	"strings"
@@ -31,18 +32,7 @@ func ResourceService() sprint.ResourceService {
 
 func (t *implResourceService) GetResource(name string) (content []byte, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	res, ok := t.Context.Resource(name)
 	if !ok {

@@ -61,6 +61,18 @@ func CreateFileIfNeeded(fileName string, fileperm os.FileMode) error {
 	return os.Chmod(fileName, fileperm)
 }
 
+func CreateDirIfNeeded(dir string, perm os.FileMode) error {
+	if _, err := os.Stat(dir); err != nil {
+		if err = os.Mkdir(dir, perm); err != nil {
+			return errors.Errorf("unable to create dir '%s' with permissions %x, %v", dir, perm ,err)
+		}
+		if err = os.Chmod(dir, perm); err != nil {
+			return errors.Errorf("unable to chmod dir '%s' with permissions %x, %v", dir, perm ,err)
+		}
+	}
+	return nil
+}
+
 func RemoveFileIfExist(filePath string) error {
 	_, err := os.Stat(filePath)
 	exist := err == nil

@@ -7,10 +7,10 @@ package core
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/keyvalstore/boltstore"
 	"github.com/codeallergy/glue"
+	"github.com/keyvalstore/boltstore"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -33,30 +33,19 @@ func BoltStorageFactory(beanName string) glue.FactoryBean {
 
 func (t *implBoltStorageFactory) Object() (object interface{}, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	dataDir := t.DataDir
 	if dataDir == "" {
 		dataDir = filepath.Join(t.Application.ApplicationDir(), "db")
 
-		if err := createDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+		if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 			return nil, err
 		}
 
 		dataDir = filepath.Join(dataDir, t.Application.Name())
 	}
-	if err := createDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+	if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 		return nil, err
 	}
 

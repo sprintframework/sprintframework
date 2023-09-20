@@ -6,9 +6,9 @@
 package core
 
 import (
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
 	"github.com/keyvalstore/cachestore"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"reflect"
 )
 
@@ -22,18 +22,7 @@ func InmemoryStorageFactory(beanName string) glue.FactoryBean {
 
 func (t *implInmemoryStorageFactory) Object() (object interface{}, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	return cachestore.New(t.beanName), nil
 }

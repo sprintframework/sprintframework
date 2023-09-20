@@ -6,13 +6,13 @@
 package server
 
 import (
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/codeallergy/glue"
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"reflect"
-	"github.com/pkg/errors"
 )
 
 type implGrpcServerFactory struct {
@@ -28,18 +28,7 @@ func GrpcServerFactory(beanName string) glue.FactoryBean {
 
 func (t *implGrpcServerFactory) Object() (object interface{}, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	srv, err := t.createServer()
 	if err != nil {

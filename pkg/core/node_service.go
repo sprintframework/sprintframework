@@ -23,15 +23,17 @@ import (
 const oneMb = 1024 * 1024
 
 type implNodeService struct {
-	Application      sprint.Application      `inject`
-	Properties       glue.Properties      `inject`
-	ConfigRepository sprint.ConfigRepository `inject`
-	Log              *zap.Logger            `inject`
+	Application         sprint.Application         `inject`
+	ApplicationFlags    sprint.ApplicationFlags    `inject`
+	Properties       glue.Properties          `inject`
+	ConfigRepository sprint.ConfigRepository  `inject`
+	Log              *zap.Logger              `inject`
 
 	initOnce sync.Once
 
 	nodeIdHex string
 	nodeId    uint64
+	nodeName  string
 
 	lastTimestamp atomic.Int64
 	clock         atomic.Int32
@@ -50,6 +52,7 @@ func (t *implNodeService) GetStats(cb func(name, value string) bool) error {
 	runtime.ReadMemStats(&m)
 
 	cb("id", t.nodeIdHex)
+	cb("name", t.nodeName)
 	cb("numGoroutine", strconv.Itoa(runtime.NumGoroutine()))
 	cb("numCPU", strconv.Itoa(runtime.NumCPU()))
 	cb("numCgoCall", strconv.FormatInt(runtime.NumCgoCall(), 10))
@@ -64,18 +67,14 @@ func (t *implNodeService) GetStats(cb func(name, value string) bool) error {
 
 func (t *implNodeService) PostConstruct() (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
+
+	seq := t.ApplicationFlags.Node()
+	if seq == 0 {
+		t.nodeName = t.Application.Name()
+	} else {
+		t.nodeName = fmt.Sprintf("%s-%d", t.Application.Name(), t.ApplicationFlags.Node())
+	}
 
 	t.nodeIdHex = t.Properties.GetString("node.id", "")
 	if t.nodeIdHex == "" {
@@ -98,6 +97,10 @@ func (t *implNodeService) NodeId() uint64 {
 
 func (t *implNodeService) NodeIdHex() string {
 	return t.nodeIdHex
+}
+
+func (t *implNodeService) NodeName() string {
+	return t.nodeName
 }
 
 func (t *implNodeService) Issue() uuid.UUID {

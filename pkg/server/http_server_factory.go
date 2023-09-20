@@ -13,6 +13,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	rt "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/pkg/errors"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/acme/autocert"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -44,18 +45,7 @@ func (t *implHttpServerFactory) isEnabled(name string) bool {
 
 func (t *implHttpServerFactory) Object() (object interface{}, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	listenAddr := t.Properties.GetString(fmt.Sprintf("%s.%s", t.beanName, "listen-address"), "")
 

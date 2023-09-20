@@ -11,6 +11,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
 	"github.com/pkg/errors"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/atomic"
 	"math/rand"
 	"os"
@@ -153,18 +154,7 @@ func (t *application) GetStats(cb func(name, value string) bool) error {
 
 func (t *application) PostConstruct() (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	t.executable = os.Args[0]
 	t.executableDir, err = filepath.Abs(filepath.Dir(t.executable))
@@ -256,18 +246,7 @@ func (t *application) Err() error {
 
 func (t *application) Run(args []string) (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	rand.Seed(time.Now().UnixNano())
 

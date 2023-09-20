@@ -9,6 +9,7 @@ import (
 	"crypto/tls"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"net"
@@ -73,18 +74,7 @@ func (t *implHttpServer) Destroy() error {
 
 func (t *implHttpServer) Serve() (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	t.Log.Info("HttpServerServe", zap.String("addr", t.srv.Addr), zap.Bool("tls", t.srv.TLSConfig != nil))
 

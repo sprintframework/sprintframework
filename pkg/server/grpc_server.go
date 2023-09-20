@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -90,18 +91,7 @@ func (t *implGrpcServer) Destroy() error {
 
 func (t *implGrpcServer) Serve() (err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	t.Log.Info("GrpcServerServe", zap.String("addr", t.listenAddr), zap.Bool("tls", t.TlsConfig != nil))
 

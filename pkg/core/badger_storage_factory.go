@@ -64,30 +64,30 @@ func (t *implBadgerStorageFactory) Object() (object interface{}, err error) {
 	if dataDir == "" {
 		dataDir = filepath.Join(t.Application.ApplicationDir(), "db")
 
-		if err := createDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+		if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 			return nil, err
 		}
 
 		dataDir = filepath.Join(dataDir, t.Application.Name())
 	}
 
-	if err := createDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+	if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 		return nil, err
 	}
 
 	dataDir = filepath.Join(dataDir, t.beanName)
-	if err := createDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+	if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 		return nil, err
 	}
 
 	splitKeyValueDirs := t.Properties.GetBool(fmt.Sprintf("%s.split-key-value", t.beanName), false)
 	if splitKeyValueDirs {
 		keyDataDir := filepath.Join(dataDir, "key")
-		if err := createDirIfNeeded(keyDataDir, t.DataDirPerm); err != nil {
+		if err := util.CreateDirIfNeeded(keyDataDir, t.DataDirPerm); err != nil {
 			return nil, err
 		}
 		valueDataDir := filepath.Join(dataDir, "value")
-		if err := createDirIfNeeded(valueDataDir, t.DataDirPerm); err != nil {
+		if err := util.CreateDirIfNeeded(valueDataDir, t.DataDirPerm); err != nil {
 			return nil, err
 		}
 	}

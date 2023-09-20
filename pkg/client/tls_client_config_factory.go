@@ -13,6 +13,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/codeallergy/properties"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/util"
 	"path/filepath"
 	"reflect"
 )
@@ -37,18 +38,7 @@ func TlsConfigFactory(beanName string) glue.FactoryBean {
 
 func (t *tlsConfigFactory) Object() (object interface{}, err error) {
 
-	defer func() {
-		if r := recover(); r != nil {
-			switch v := r.(type) {
-			case error:
-				err = v
-			case string:
-				err = errors.New(v)
-			default:
-				err = errors.Errorf("%v", v)
-			}
-		}
-	}()
+	defer util.PanicToError(&err)
 
 	appDir := properties.Locate(t.CompanyName).GetDir(t.Application.Name())
 
