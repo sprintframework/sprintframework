@@ -30,12 +30,12 @@ func CertCommand() sprint.Command {
 }
 
 func (t *implCertCommand) BeanName() string {
-	return "cert"
+	return "certs"
 }
 
 func (t *implCertCommand) Help() string {
 	helpText := `
-Usage: ./%s cert [command]
+Usage: ./%s certs [command]
 
 	Provides management functionality over certificates.
 
@@ -66,7 +66,7 @@ Commands:
 }
 
 func (t *implCertCommand) Synopsis() string {
-	return "cert commands: [list, dump, upload, create, renew, remove, client, acme, self, manager]"
+	return "certs commands: [list, dump, upload, create, renew, remove, client, acme, self, manager]"
 }
 
 func (t *implCertCommand) Run(args []string) error {
