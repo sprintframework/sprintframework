@@ -31,7 +31,7 @@ type implLogFactory struct {
 
 }
 
-func LogFactory() glue.FactoryBean {
+func ZapLogFactory() glue.FactoryBean {
 	return &implLogFactory{}
 }
 

@@ -22,7 +22,7 @@ func CoreScanner(scan... interface{}) sprint.CoreScanner {
 func (t *coreScanner) CoreBeans() []interface{} {
 
 	beans := []interface{}{
-		LogFactory(),
+		ZapLogFactory(),
 		NodeService(),
 		ConfigRepository(10000),
 		JobService(),
