@@ -18,7 +18,7 @@ import (
 	"reflect"
 )
 
-type implLogFactory struct {
+type implZapLogFactory struct {
 	Application      sprint.Application      `inject`
 	ApplicationFlags sprint.ApplicationFlags `inject`
 	Properties       glue.Properties         `inject`
@@ -32,10 +32,10 @@ type implLogFactory struct {
 }
 
 func ZapLogFactory() glue.FactoryBean {
-	return &implLogFactory{}
+	return &implZapLogFactory{}
 }
 
-func (t *implLogFactory) Object() (object interface{}, err error) {
+func (t *implZapLogFactory) Object() (object interface{}, err error) {
 
 	defer util.PanicToError(&err)
 
@@ -90,18 +90,18 @@ func (t *implLogFactory) Object() (object interface{}, err error) {
 
 }
 
-func (t *implLogFactory) ObjectType() reflect.Type {
-	return sprint.LogClass
+func (t *implZapLogFactory) ObjectType() reflect.Type {
+	return sprint.ZapLogClass
 }
 
-func (t *implLogFactory) ObjectName() string {
+func (t *implZapLogFactory) ObjectName() string {
 	return "zap_logger"
 }
 
-func (t *implLogFactory) Singleton() bool {
+func (t *implZapLogFactory) Singleton() bool {
 	return true
 }
 
-func (t *implLogFactory) getNodeName() string {
+func (t *implZapLogFactory) getNodeName() string {
 	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
 }

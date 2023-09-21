@@ -176,7 +176,7 @@ func (t *implRunNode) getNodeName() string {
 }
 
 func findZapLogger(core glue.Context) (*zap.Logger, bool) {
-	list := core.Bean(sprint.LogClass, glue.DefaultLevel)
+	list := core.Bean(sprint.ZapLogClass, glue.DefaultLevel)
 	if len(list) > 0 {
 		if l, ok := list[0].Object().(*zap.Logger); ok {
 			return l, true

@@ -23,6 +23,7 @@ func (t *coreScanner) CoreBeans() []interface{} {
 
 	beans := []interface{}{
 		ZapLogFactory(),
+		HCLogFactory(),
 		NodeService(),
 		ConfigRepository(10000),
 		JobService(),

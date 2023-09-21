@@ -11,6 +11,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2
+	github.com/hashicorp/go-hclog v1.5.0
 	github.com/keyvalstore/badgerstore v1.3.0
 	github.com/keyvalstore/store v1.3.0
 	github.com/mailgun/mailgun-go/v4 v4.8.1
@@ -18,7 +19,7 @@ require (
 	github.com/sprintframework/cert v1.0.0
 	github.com/sprintframework/dns v1.0.0 // indirect
 	github.com/sprintframework/nat v1.0.0
-	github.com/sprintframework/sprint v1.3.4
+	github.com/sprintframework/sprint v1.3.5
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.24.0
@@ -46,6 +47,7 @@ require (
 	github.com/dgraph-io/badger/v3 v3.2103.5 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/fatih/color v1.13.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -55,6 +57,8 @@ require (
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.16.0 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
+	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
