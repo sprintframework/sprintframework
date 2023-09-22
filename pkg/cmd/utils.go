@@ -141,7 +141,7 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 			select {
 			case <-groupCtx.Done():
 				for _, server := range boundServers {
-					server.Shutdown()
+					g.Go(server.Shutdown)
 				}
 			}
 		}()

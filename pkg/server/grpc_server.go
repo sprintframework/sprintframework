@@ -92,7 +92,7 @@ func (t *implGrpcServer) ListenAddress() net.Addr {
 	}
 }
 
-func (t *implGrpcServer) Shutdown() {
+func (t *implGrpcServer) Shutdown() (err error) {
 
 	t.shutdownOnce.Do(func() {
 
@@ -100,16 +100,20 @@ func (t *implGrpcServer) Shutdown() {
 			zap.String("addr", t.ListenAddress().String()),
 			zap.String("network", t.ListenAddress().Network()))
 
-		if t.listener != nil {
-			t.listener.Close()
-		}
+		// notify everyone that we are shutting down
+		close(t.shutdownCh)
 
 		if !t.doGracefulStop() {
 			t.doStop()
 		}
 
-		close(t.shutdownCh)
+		if t.listener != nil {
+			t.listener.Close()
+		}
+
 	})
+
+	return
 }
 
 func (t *implGrpcServer) doGracefulStop() bool {

@@ -69,7 +69,7 @@ func (t *implHttpServer) ListenAddress() net.Addr {
 	}
 }
 
-func (t *implHttpServer) Shutdown() {
+func (t *implHttpServer) Shutdown() (err error) {
 
 	t.shutdownOnce.Do(func() {
 
@@ -77,13 +77,18 @@ func (t *implHttpServer) Shutdown() {
 			zap.String("addr", t.ListenAddress().String()),
 			zap.String("network", t.ListenAddress().Network()))
 
+		// notify everyone that we are shutting down
+		close(t.shutdownCh)
+
+		err = t.srv.Close()
+
 		if t.listener != nil {
 			t.listener.Close()
 		}
 
-		close(t.shutdownCh)
-		t.srv.Close()
 	})
+
+	return
 }
 
 func (t *implHttpServer) ShutdownCh() <-chan struct{} {
