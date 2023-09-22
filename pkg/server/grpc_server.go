@@ -86,6 +86,11 @@ func (t *implGrpcServer) ListenAddress() net.Addr {
 }
 
 func (t *implGrpcServer) Shutdown() {
+
+	t.Log.Info("GrpcServerShutdown",
+		zap.String("addr", t.ListenAddress().String()),
+		zap.String("network", t.ListenAddress().Network()))
+
 	t.shutdownOnce.Do(func() {
 		if t.listener != nil {
 			t.listener.Close()

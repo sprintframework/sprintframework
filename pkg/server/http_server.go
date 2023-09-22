@@ -68,6 +68,11 @@ func (t *implHttpServer) ListenAddress() net.Addr {
 }
 
 func (t *implHttpServer) Shutdown() {
+
+	t.Log.Info("HttpServerShutdown",
+		zap.String("addr", t.ListenAddress().String()),
+		zap.String("network", t.ListenAddress().Network()))
+
 	t.shutdownOnce.Do(func() {
 		if t.listener != nil {
 			t.listener.Close()

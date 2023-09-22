@@ -113,7 +113,7 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 			return errors.New("sprint.Server instances are not found in server context")
 		}
 
-		c, cancel := context.WithCancel(context.Background())
+		c, cancel := context.WithCancel(application)
 		defer cancel()
 
 		var boundServers []sprint.Server
@@ -126,13 +126,25 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 		}
 
 		cnt := 0
-		g, _ := errgroup.WithContext(c)
+		g, groupCtx := errgroup.WithContext(c)
 
 		for _, server := range boundServers {
 			g.Go(server.Serve)
 			cnt++
 		}
 		log.Info("NodeStarted", zap.Int("Servers", cnt), zap.Int("Node", flags.Node()))
+
+		// if application shutdown or first server stops then groupCtx going to be canceled
+		// if groupCtx canceled we need to shutdown all servers
+		// ALL or Nothing
+		go func() {
+			select {
+			case <-groupCtx.Done():
+				for _, server := range boundServers {
+					server.Shutdown()
+				}
+			}
+		}()
 
 		go func() {
 
@@ -148,6 +160,8 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 				signal = syscall.SIGABRT
 			}
 
+			log.Info("StopSignal", zap.String("signal", signal.String()))
+
 			if signal == syscall.SIGHUP {
 				list := core.Bean(sprint.LumberjackClass, 1)
 				if len(list) > 0 {
@@ -160,31 +174,13 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 				}
 				// no lumberjack found, restart application
 				application.Shutdown(true)
+			} else {
+				application.Shutdown(false)
 			}
-
-			log.Info("StopSignal", zap.String("signal", signal.String()))
-			/*
-			total := 0
-			for _, server := range boundServers {
-				server.Shutdown()
-				total++
-			}
-			log.Info("NodeStopped", zap.Int("cnt", total), zap.Int("node", flags.Node()))
-			 */
-			cancel()
 
 		}()
 
-		err = g.Wait()
-
-		total := 0
-		for _, server := range boundServers {
-			server.Shutdown()
-			total++
-		}
-		log.Info("NodeStopped", zap.Int("cnt", total), zap.Int("node", flags.Node()))
-
-		return err
+		return g.Wait()
 	})
 
 }

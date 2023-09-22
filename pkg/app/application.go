@@ -218,10 +218,10 @@ func (t *application) Active() bool {
 func (t *application) Shutdown(restart bool) {
 	t.restarting.Store(restart)
 	t.shuttingDown.Store(true)
+	t.applicationErr.Store(errors.New("closed"))
 	t.shutdownOnce.Do(func() {
 		close(t.shutdownCh)
 	})
-	t.applicationErr.Store(errors.New("application shutting down"))
 }
 
 func (t *application) Restarting() bool {
