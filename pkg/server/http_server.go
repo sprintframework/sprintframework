@@ -27,9 +27,9 @@ type implHttpServer struct {
 	srv             *http.Server
 	listener        net.Listener
 
-	alive        atomic.Bool
-	shutdownOnce sync.Once
-	shutdownCh   chan struct{}
+	alive           atomic.Bool
+	shutdownOnce    sync.Once
+	shutdownCh      chan struct{}
 }
 
 func NewHttpServer(srv *http.Server) sprint.Server {
@@ -80,8 +80,9 @@ func (t *implHttpServer) Shutdown() {
 		if t.listener != nil {
 			t.listener.Close()
 		}
-		t.srv.Close()
+
 		close(t.shutdownCh)
+		t.srv.Close()
 	})
 }
 

@@ -18,6 +18,12 @@ import (
 	"net"
 	"strings"
 	"sync"
+	"time"
+)
+
+const (
+	gracefulShutdownTimeout = 2 * time.Second
+	shutdownTimeout = time.Second
 )
 
 type implGrpcServer struct {
@@ -97,9 +103,53 @@ func (t *implGrpcServer) Shutdown() {
 		if t.listener != nil {
 			t.listener.Close()
 		}
-		go t.srv.Stop()
+
+		if !t.doGracefulStop() {
+			t.doStop()
+		}
+
 		close(t.shutdownCh)
 	})
+}
+
+func (t *implGrpcServer) doGracefulStop() bool {
+
+	stopCh := make(chan struct{})
+	go func() {
+		t.srv.GracefulStop()
+		close(stopCh)
+	}()
+
+	/**
+	Wait a little bit for graceful shutdown of gRPC server
+	*/
+
+	select {
+	case <-stopCh:
+		return true
+	case <-time.After(gracefulShutdownTimeout):
+		return false
+	}
+
+	return true
+}
+
+func (t *implGrpcServer) doStop() bool {
+
+	stopCh := make(chan struct{})
+	go func() {
+		t.srv.Stop()
+		close(stopCh)
+	}()
+
+	select {
+	case <-stopCh:
+		return true
+	case <-time.After(shutdownTimeout):
+		return false
+	}
+
+	return true
 }
 
 func (t *implGrpcServer) ShutdownCh() <-chan struct{} {
