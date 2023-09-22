@@ -17,6 +17,7 @@ import (
 	"google.golang.org/grpc"
 	"net"
 	"strings"
+	"sync"
 )
 
 type implGrpcServer struct {
@@ -33,15 +34,17 @@ type implGrpcServer struct {
 	srv             *grpc.Server
 	listener        net.Listener
 
-	running         atomic.Bool
+	alive           atomic.Bool
+	shutdownOnce    sync.Once
+	shutdownCh      chan struct{}
 }
 
 func NewGrpcServer(beanName string, srv *grpc.Server) sprint.Server {
-	return &implGrpcServer{beanName: beanName, srv: srv}
+	return &implGrpcServer{beanName: beanName, srv: srv, shutdownCh: make(chan struct{})}
 }
 
 func (t *implGrpcServer) PostConstruct() error {
-	t.running.Store(false)
+	t.alive.Store(false)
 	return nil
 }
 
@@ -70,29 +73,35 @@ func (t *implGrpcServer) Bind() (err error) {
 	return nil
 }
 
-func (t *implGrpcServer) Active() bool {
-	return t.running.Load()
+func (t *implGrpcServer) Alive() bool {
+	return t.alive.Load()
 }
 
 func (t *implGrpcServer) ListenAddress() net.Addr {
 	if t.listener != nil {
 		return t.listener.Addr()
 	} else {
-		return EmptyAddr{}
+		return sprint.EmptyAddr
 	}
 }
 
-func (t *implGrpcServer) Stop() {
-	if t.running.CAS(true, false) {
+func (t *implGrpcServer) Shutdown() {
+	t.shutdownOnce.Do(func() {
 		if t.listener != nil {
 			t.listener.Close()
 		}
 		go t.srv.Stop()
-	}
+		close(t.shutdownCh)
+	})
+}
+
+func (t *implGrpcServer) ShutdownCh() <-chan struct{} {
+	return t.shutdownCh
 }
 
 func (t *implGrpcServer) Destroy() error {
-	t.Stop()
+	// safe to call twice
+	t.Shutdown()
 	return nil
 }
 
@@ -113,9 +122,9 @@ func (t *implGrpcServer) Serve() (err error) {
 			zap.Bool("tls", false))
 	}
 
-	t.running.Store(true)
+	t.alive.Store(true)
 	err = t.srv.Serve(t.listener)
-	t.running.Store(false)
+	t.alive.Store(false)
 
 	if err == nil || strings.Contains(err.Error(), "closed") {
 		return nil

@@ -107,6 +107,7 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 	return doWithServers(core, func(servers []sprint.Server) (err error) {
 
 		defer util.PanicToError(&err)
+		defer log.Sync()
 
 		if len(servers) == 0 {
 			return errors.New("sprint.Server instances are not found in server context")
@@ -161,19 +162,29 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 				application.Shutdown(true)
 			}
 
-			log.Info("StopNodeSignal", zap.String("signal", signal.String()))
+			log.Info("StopSignal", zap.String("signal", signal.String()))
+			/*
 			total := 0
 			for _, server := range boundServers {
-				server.Stop()
+				server.Shutdown()
 				total++
 			}
 			log.Info("NodeStopped", zap.Int("cnt", total), zap.Int("node", flags.Node()))
-			log.Sync()
+			 */
 			cancel()
 
 		}()
 
-		return g.Wait()
+		err = g.Wait()
+
+		total := 0
+		for _, server := range boundServers {
+			server.Shutdown()
+			total++
+		}
+		log.Info("NodeStopped", zap.Int("cnt", total), zap.Int("node", flags.Node()))
+
+		return err
 	})
 
 }

@@ -15,26 +15,28 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 type implHttpServer struct {
 
-	Log       *zap.Logger                 `inject`
+	Log             *zap.Logger            `inject`
+	NodeService     sprint.NodeService     `inject`
 
-	NodeService    sprint.NodeService     `inject`
+	srv             *http.Server
+	listener        net.Listener
 
-	srv       *http.Server
-	listener  net.Listener
-
-	running   atomic.Bool
+	alive        atomic.Bool
+	shutdownOnce sync.Once
+	shutdownCh   chan struct{}
 }
 
 func NewHttpServer(srv *http.Server) sprint.Server {
-	return &implHttpServer{srv: srv}
+	return &implHttpServer{srv: srv, shutdownCh: make(chan struct{})}
 }
 
 func (t *implHttpServer) PostConstruct() error {
-	t.running.Store(false)
+	t.alive.Store(false)
 	return nil
 }
 
@@ -53,8 +55,8 @@ func (t *implHttpServer) Bind() (err error) {
 	return nil
 }
 
-func (t *implHttpServer) Active() bool {
-	return t.running.Load()
+func (t *implHttpServer) Alive() bool {
+	return t.alive.Load()
 }
 
 func (t *implHttpServer) ListenAddress() net.Addr {
@@ -65,17 +67,23 @@ func (t *implHttpServer) ListenAddress() net.Addr {
 	}
 }
 
-func (t *implHttpServer) Stop() {
-	if t.running.CAS(true, false) {
+func (t *implHttpServer) Shutdown() {
+	t.shutdownOnce.Do(func() {
 		if t.listener != nil {
 			t.listener.Close()
 		}
 		t.srv.Close()
-	}
+		close(t.shutdownCh)
+	})
+}
+
+func (t *implHttpServer) ShutdownCh() <-chan struct{} {
+	return t.shutdownCh
 }
 
 func (t *implHttpServer) Destroy() error {
-	t.Stop()
+	// safe to call twice
+	t.Shutdown()
 	return nil
 }
 
@@ -96,15 +104,14 @@ func (t *implHttpServer) Serve() (err error) {
 			zap.Bool("tls", false))
 	}
 
-	t.running.Store(true)
 	if t.srv.TLSConfig != nil {
 		t.listener = tls.NewListener(t.listener, t.srv.TLSConfig)
 		//err = t.srv.ServeTLS(t.listener, "", "")
 	}
 
+	t.alive.Store(true)
 	err = t.srv.Serve(t.listener)
-
-	t.running.Store(false)
+	t.alive.Store(false)
 
 	if err == nil || strings.Contains(err.Error(), "closed") {
 		return nil
