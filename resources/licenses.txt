@@ -9,6 +9,7 @@ github.com/dgraph-io/badger/v3,https://github.com/dgraph-io/badger/blob/v3.2103.
 github.com/dgraph-io/ristretto,https://github.com/dgraph-io/ristretto/blob/v0.1.1/LICENSE,Apache-2.0
 github.com/dgraph-io/ristretto/z,https://github.com/dgraph-io/ristretto/blob/v0.1.1/z/LICENSE,MIT
 github.com/dustin/go-humanize,https://github.com/dustin/go-humanize/blob/v1.0.1/LICENSE,MIT
+github.com/fatih/color,https://github.com/fatih/color/blob/v1.13.0/LICENSE.md,MIT
 github.com/fsnotify/fsnotify,https://github.com/fsnotify/fsnotify/blob/v1.6.0/LICENSE,BSD-3-Clause
 github.com/gogo/protobuf/proto,https://github.com/gogo/protobuf/blob/v1.3.2/LICENSE,BSD-3-Clause
 github.com/golang-jwt/jwt,https://github.com/golang-jwt/jwt/blob/v3.2.2/LICENSE,MIT
@@ -21,8 +22,10 @@ github.com/gorilla/mux,https://github.com/gorilla/mux/blob/v1.8.0/LICENSE,BSD-3-
 github.com/grpc-ecosystem/go-grpc-middleware,https://github.com/grpc-ecosystem/go-grpc-middleware/blob/v1.3.0/LICENSE,Apache-2.0
 github.com/grpc-ecosystem/grpc-gateway,https://github.com/grpc-ecosystem/grpc-gateway/blob/v1.16.0/LICENSE.txt,BSD-3-Clause
 github.com/grpc-ecosystem/grpc-gateway/v2,https://github.com/grpc-ecosystem/grpc-gateway/blob/v2.15.2/LICENSE.txt,BSD-3-Clause
+github.com/hashicorp/go-hclog,https://github.com/hashicorp/go-hclog/blob/v1.5.0/LICENSE,MIT
 github.com/json-iterator/go,https://github.com/json-iterator/go/blob/v1.1.12/LICENSE,MIT
 github.com/keyvalstore/badgerstore,Unknown,Unknown
+github.com/keyvalstore/bboltstore,Unknown,Unknown
 github.com/keyvalstore/boltstore,Unknown,Unknown
 github.com/keyvalstore/cachestore,Unknown,Unknown
 github.com/keyvalstore/store,Unknown,Unknown
@@ -31,6 +34,8 @@ github.com/klauspost/compress/internal/snapref,https://github.com/klauspost/comp
 github.com/klauspost/compress/zstd/internal/xxhash,https://github.com/klauspost/compress/blob/v1.16.0/zstd/internal/xxhash/LICENSE.txt,MIT
 github.com/mailgun/mailgun-go/v4,Unknown,Unknown
 github.com/mailgun/mailgun-go/v4/events,Unknown,Unknown
+github.com/mattn/go-colorable,https://github.com/mattn/go-colorable/blob/v0.1.12/LICENSE,MIT
+github.com/mattn/go-isatty,https://github.com/mattn/go-isatty/blob/v0.0.16/LICENSE,MIT
 github.com/modern-go/concurrent,https://github.com/modern-go/concurrent/blob/bacd9c7ef1dd/LICENSE,Apache-2.0
 github.com/modern-go/reflect2,https://github.com/modern-go/reflect2/blob/v1.0.2/LICENSE,Apache-2.0
 github.com/patrickmn/go-cache,https://github.com/patrickmn/go-cache/blob/v2.1.0/LICENSE,MIT
@@ -51,6 +56,7 @@ github.com/sprintframework/sprintframework/pkg/resources,Unknown,Unknown
 github.com/sprintframework/sprintframework/pkg/server,Unknown,Unknown
 github.com/sprintframework/sprintframework/pkg/util,Unknown,Unknown
 github.com/sprintframework/sprintpb,Unknown,Unknown
+go.etcd.io/bbolt,https://github.com/etcd-io/bbolt/blob/v1.3.7/LICENSE,MIT
 go.opencensus.io,https://github.com/census-instrumentation/opencensus-go/blob/v0.24.0/LICENSE,Apache-2.0
 go.uber.org/atomic,https://github.com/uber-go/atomic/blob/v1.10.0/LICENSE.txt,MIT
 go.uber.org/multierr,https://github.com/uber-go/multierr/blob/v1.9.0/LICENSE.txt,MIT
