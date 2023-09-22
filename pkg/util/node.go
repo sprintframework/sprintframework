@@ -8,8 +8,7 @@ package util
 import (
 	"fmt"
 	"github.com/pkg/errors"
-	"strconv"
-	"strings"
+	"net"
 )
 
 /**
@@ -28,30 +27,27 @@ func AppendNodeName(name string, next string) string {
 	return fmt.Sprintf("%s-%s", name, next)
 }
 
-func AdjustPortNumberInAddress(addr string, seq int) (result string, err error) {
-	if seq == 0 {
-		return addr, nil
-	}
-	parts := strings.Split(addr, ":")
-	if len(parts) > 0 {
-		lastIndex := len(parts)-1
-		parts[lastIndex], err = AdjustPortNumber(parts[lastIndex], seq)
-		if err != nil {
-			return
-		}
-		return strings.Join(parts, ":"), nil
-	}
-	return addr, nil
-}
+func ParseAndAdjustTCPAddr(address string, seq int) (*net.TCPAddr, error) {
 
-func AdjustPortNumber(port string, seq int) (string, error) {
-	portNum, err := strconv.Atoi(port)
+	host, port, err := net.SplitHostPort(address)
 	if err != nil {
-		return "", errors.Errorf("invalid port number string '%s', %v", port, err)
+		return nil, errors.Errorf("empty port in address '%s', %v", address, err)
 	}
-	if portNum == 0 {
-		// do not adjust zero port number, because it is the any one
-		return port, nil
+	if host == "" {
+		// empty host means all IPs
+		host = "0.0.0.0"
 	}
-	return strconv.Itoa(portNum + seq), nil
+
+	addr := fmt.Sprintf("%s:%s", host, port)
+
+	// Resolve the address
+	tcpAddr, err := net.ResolveTCPAddr("tcp", addr)
+	if err != nil {
+		return nil, errors.Errorf("invalid address '%s', %v", addr, err)
+	}
+
+	tcpAddr.Port += seq
+
+	return tcpAddr, nil
+
 }

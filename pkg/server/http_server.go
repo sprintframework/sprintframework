@@ -7,6 +7,7 @@ package server
 
 import (
 	"crypto/tls"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/util"
@@ -42,10 +43,11 @@ func (t *implHttpServer) PostConstruct() error {
 
 func (t *implHttpServer) Bind() (err error) {
 
-	t.srv.Addr, err = util.AdjustPortNumberInAddress(t.srv.Addr, t.NodeService.NodeSeq())
+	tcpAddr, err := util.ParseAndAdjustTCPAddr(t.srv.Addr, t.NodeService.NodeSeq())
 	if err != nil {
-		return err
+		return
 	}
+	t.srv.Addr = fmt.Sprintf("%s:%d", tcpAddr.IP.String(), tcpAddr.Port)
 
 	t.listener, err = net.Listen("tcp4", t.srv.Addr)
 	if err != nil {

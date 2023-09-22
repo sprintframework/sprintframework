@@ -51,10 +51,11 @@ func (t *implGrpcClientFactory) Object() (object interface{}, err error) {
 		connectAddr = t.getConnectAddress(grpcListenAddr)
 	}
 
-	connectAddr, err = util.AdjustPortNumberInAddress(connectAddr, t.ApplicationFlags.Node())
+	tcpAddr, err := util.ParseAndAdjustTCPAddr(connectAddr, t.ApplicationFlags.Node())
 	if err != nil {
 		return
 	}
+	connectAddr = fmt.Sprintf("%s:%d", tcpAddr.IP.String(), tcpAddr.Port)
 
 	return t.doDial(connectAddr)
 }

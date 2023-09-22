@@ -56,10 +56,11 @@ func (t *implGrpcServer) Bind() (err error) {
 		return errors.Errorf("property '%s.listen-address' not found in server context", t.beanName)
 	}
 
-	t.listenAddr, err = util.AdjustPortNumberInAddress(t.listenAddr, t.NodeService.NodeSeq())
+	tcpAddr, err := util.ParseAndAdjustTCPAddr(t.listenAddr, t.NodeService.NodeSeq())
 	if err != nil {
-		return err
+		return
 	}
+	t.listenAddr = fmt.Sprintf("%s:%d", tcpAddr.IP.String(), tcpAddr.Port)
 
 	t.listener, err = net.Listen("tcp4", t.listenAddr)
 	if err != nil {
