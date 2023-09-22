@@ -13,6 +13,7 @@ import (
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/util"
 	"go.uber.org/atomic"
+	"os"
 	"runtime"
 	"strconv"
 	"sync"
@@ -31,8 +32,18 @@ type implNodeService struct {
 
 	nodeIdHex string
 	nodeId    uint64
-	nodeName  string
 	nodeSeq   int
+
+	LocalNodeName       string         `value:"node.local,default="`
+	LANNodeName         string         `value:"node.lan,default="`
+	WANNodeName         string         `value:"node.wan,default="`
+	DataCenterName      string         `value:"node.dc,default=default"`
+
+	/**
+	Default: Host Name + Node Sequence Number
+	*/
+
+	advertiseName  string
 
 	lastTimestamp atomic.Int64
 	clock         atomic.Int32
@@ -51,7 +62,10 @@ func (t *implNodeService) GetStats(cb func(name, value string) bool) error {
 	runtime.ReadMemStats(&m)
 
 	cb("id", t.nodeIdHex)
-	cb("name", t.nodeName)
+	cb("local", t.LocalNodeName)
+	cb("lan", t.LANNodeName)
+	cb("wan", t.WANNodeName)
+	cb("dc", t.DataCenterName)
 	cb("numGoroutine", strconv.Itoa(runtime.NumGoroutine()))
 	cb("numCPU", strconv.Itoa(runtime.NumCPU()))
 	cb("numCgoCall", strconv.FormatInt(runtime.NumCgoCall(), 10))
@@ -68,9 +82,6 @@ func (t *implNodeService) PostConstruct() (err error) {
 
 	defer util.PanicToError(&err)
 
-	t.nodeName = util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
-	t.nodeSeq = t.ApplicationFlags.Node()
-
 	t.nodeIdHex = t.Properties.GetString("node.id", "")
 	if t.nodeIdHex == "" {
 		t.nodeIdHex, err = util.GenerateNodeId()
@@ -82,8 +93,33 @@ func (t *implNodeService) PostConstruct() (err error) {
 			return errors.Errorf("set property 'node.id' with value '%s', %v", t.nodeIdHex, err)
 		}
 	}
+
 	t.nodeId, err = util.ParseNodeId(t.nodeIdHex)
-	return err
+	if err != nil {
+		return err
+	}
+
+	t.nodeSeq = t.ApplicationFlags.Node()
+
+	if t.LocalNodeName == "" {
+		t.LocalNodeName = util.AppendNodeSequence(t.Application.Name(), t.nodeSeq)
+	}
+
+	if t.LANNodeName == "" {
+
+		hostname, err := os.Hostname()
+		if err != nil {
+			return err
+		}
+
+		t.LANNodeName = util.AppendNodeName(t.LocalNodeName, hostname)
+	}
+
+	if t.WANNodeName == "" {
+		t.WANNodeName = util.AppendNodeName(t.LANNodeName, t.DataCenterName)
+	}
+
+	return nil
 }
 
 func (t *implNodeService) NodeId() uint64 {
@@ -94,8 +130,20 @@ func (t *implNodeService) NodeIdHex() string {
 	return t.nodeIdHex
 }
 
-func (t *implNodeService) NodeName() string {
-	return t.nodeName
+func (t *implNodeService) LocalName() string {
+	return t.LocalNodeName
+}
+
+func (t *implNodeService) LANName() string {
+	return t.LANNodeName
+}
+
+func (t *implNodeService) WANName() string {
+	return t.WANNodeName
+}
+
+func (t *implNodeService) DCName() string {
+	return t.DataCenterName
 }
 
 func (t *implNodeService) NodeSeq() int {

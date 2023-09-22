@@ -92,5 +92,5 @@ func (t *implLumberjackFactory) Singleton() bool {
 }
 
 func (t *implLumberjackFactory) getNodeName() string {
-	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

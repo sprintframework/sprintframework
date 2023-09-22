@@ -13,15 +13,19 @@ import (
 )
 
 /**
-Formats unique name of the node by adding sequence number of it to application name.
+Formats unique name of the node by adding sequence number of it to name.
  */
 
-func FormatNodeName(applicationName string, node int) string {
-	if node == 0 {
-		return applicationName
+func AppendNodeSequence(name string, seq int) string {
+	if seq == 0 {
+		return name
 	} else {
-		return fmt.Sprintf("%s-%d", applicationName, node)
+		return fmt.Sprintf("%s-%d", name, seq)
 	}
+}
+
+func AppendNodeName(name string, next string) string {
+	return fmt.Sprintf("%s-%s", name, next)
 }
 
 func AdjustPortNumberInAddress(addr string, seq int) (result string, err error) {

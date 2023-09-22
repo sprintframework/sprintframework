@@ -172,7 +172,7 @@ func (t *implRunNode) Run(args []string) (err error) {
 }
 
 func (t *implRunNode) getNodeName() string {
-	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }
 
 func findZapLogger(core glue.Context) (*zap.Logger, bool) {

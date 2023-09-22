@@ -202,7 +202,7 @@ func (t *implStartNode) executableNext(current string) string {
 }
 
 func (t *implStartNode) getNodeName() string {
-	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }
 
 func User() string {

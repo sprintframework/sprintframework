@@ -80,5 +80,5 @@ func (t *implStopNode) KillServer() error {
 }
 
 func (t *implStopNode) getNodeName() string {
-	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

@@ -69,5 +69,5 @@ func (t *implBBoltStorageFactory) Singleton() bool {
 }
 
 func (t *implBBoltStorageFactory) getNodeName() string {
-	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

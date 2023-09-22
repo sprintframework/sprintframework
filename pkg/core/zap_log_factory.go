@@ -103,5 +103,5 @@ func (t *implZapLogFactory) Singleton() bool {
 }
 
 func (t *implZapLogFactory) getNodeName() string {
-	return util.FormatNodeName(t.Application.Name(), t.ApplicationFlags.Node())
+	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }
