@@ -44,11 +44,11 @@ func (t *implGrpcClientFactory) Object() (object interface{}, err error) {
 	if connectAddr == "" {
 		// try to lookup from server address
 		serverBean := strings.ReplaceAll(t.beanName, "client", "server")
-		grpcListenAddr := t.Properties.GetString(fmt.Sprintf("%s.listen-address", serverBean), "")
+		grpcListenAddr := t.Properties.GetString(fmt.Sprintf("%s.bind-address", serverBean), "")
 		if grpcListenAddr == "" {
-			return nil, errors.Errorf("property '%s.connect-address' is not found and property '%s.listen-address' is not found too'", t.beanName, serverBean)
+			return nil, errors.Errorf("property '%s.connect-address' is not found and property '%s.bind-address' is not found too'", t.beanName, serverBean)
 		}
-		connectAddr = t.getConnectAddress(grpcListenAddr)
+		connectAddr = t.getConnectFromBindAddress(grpcListenAddr)
 	}
 
 	tcpAddr, err := util.ParseAndAdjustTCPAddr(connectAddr, t.ApplicationFlags.Node())
@@ -72,7 +72,7 @@ func (t *implGrpcClientFactory) Singleton() bool {
 	return true
 }
 
-func (t *implGrpcClientFactory) getConnectAddress(listenAddr string) string {
+func (t *implGrpcClientFactory) getConnectFromBindAddress(listenAddr string) string {
 	if strings.HasPrefix(listenAddr, "0.0.0.0:") {
 		return "127.0.0.1" + listenAddr[7:]
 	}

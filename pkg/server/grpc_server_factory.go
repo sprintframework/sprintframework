@@ -33,7 +33,7 @@ func (t *implGrpcServerFactory) Object() (object interface{}, err error) {
 
 	defer util.PanicToError(&err)
 
-	listenAddr := t.Properties.GetString( fmt.Sprintf("%s.%s", t.beanName, "listen-address"), "")
+	listenAddr := t.Properties.GetString( fmt.Sprintf("%s.%s", t.beanName, "bind-address"), "")
 
 	t.Log.Info("GrpcServerFactory",
 		zap.String("listenAddr", listenAddr),
