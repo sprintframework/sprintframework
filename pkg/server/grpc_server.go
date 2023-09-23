@@ -56,10 +56,10 @@ func (t *implGrpcServer) PostConstruct() error {
 
 func (t *implGrpcServer) Bind() (err error) {
 
-	t.listenAddr = t.Properties.GetString( fmt.Sprintf("%s.%s", t.beanName, "listen-address"), "")
+	t.listenAddr = t.Properties.GetString( fmt.Sprintf("%s.%s", t.beanName, "bind-address"), "")
 
 	if t.listenAddr == "" {
-		return errors.Errorf("property '%s.listen-address' not found in server context", t.beanName)
+		return errors.Errorf("property '%s.bind-address' not found in server context", t.beanName)
 	}
 
 	tcpAddr, err := util.ParseAndAdjustTCPAddr(t.listenAddr, t.NodeService.NodeSeq())
@@ -191,7 +191,9 @@ func (t *implGrpcServer) Serve() (err error) {
 		return nil
 	}
 
-	t.Log.Warn("GrpcServerClose", zap.Error(err))
+	if err != nil {
+		t.Log.Warn("GrpcServerClose", zap.Error(err))
+	}
 	return err
 
 }

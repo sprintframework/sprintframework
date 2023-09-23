@@ -9,14 +9,14 @@ secure-storage:
   split-key-value: false
 
 control-grpc-server:
-  listen-address: ":8543"
+  bind-address: ":8543"
 
 control-gateway-server:
-  listen-address: ":8443"
+  bind-address: ":8443"
   options: "gateway;pages;assets;gzip"
 
 redirect-https:
-  listen-address: ":8080"
+  bind-address: ":8080"
   redirect-address: "127.0.0.1:8443"
   options: "pages"
 

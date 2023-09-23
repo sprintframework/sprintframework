@@ -18,8 +18,8 @@ import (
 
 type implGrpcServerFactory struct {
 
-	Properties              glue.Properties               `inject`
-	Log                     *zap.Logger                   `inject`
+	Properties              glue.Properties                `inject`
+	Log                     *zap.Logger                    `inject`
 	AuthorizationMiddleware sprint.AuthorizationMiddleware `inject`
 
 	beanName  string

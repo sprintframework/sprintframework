@@ -131,6 +131,8 @@ func (t *implHttpServer) Serve() (err error) {
 		return nil
 	}
 
-	t.Log.Warn("HttpServerClose", zap.Error(err))
+	if err != nil {
+		t.Log.Warn("HttpServerClose", zap.Error(err))
+	}
 	return err
 }

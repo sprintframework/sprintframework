@@ -47,10 +47,10 @@ func (t *implHttpServerFactory) Object() (object interface{}, err error) {
 
 	defer util.PanicToError(&err)
 
-	listenAddr := t.Properties.GetString(fmt.Sprintf("%s.%s", t.beanName, "listen-address"), "")
+	listenAddr := t.Properties.GetString(fmt.Sprintf("%s.%s", t.beanName, "bind-address"), "")
 
 	if listenAddr == "" {
-		return nil, errors.Errorf("property '%s.listen-address' not found in server context", t.beanName)
+		return nil, errors.Errorf("property '%s.bind-address' not found in server context", t.beanName)
 	}
 
 	options := parseOptions(t.Properties.GetString(fmt.Sprintf("%s.%s", t.beanName, "options"), ""))
