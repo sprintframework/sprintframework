@@ -12,30 +12,30 @@ import (
 	"reflect"
 )
 
-type implInmemoryStorageFactory struct {
+type implCacheStoreFactory struct {
 	beanName        string
 }
 
-func InmemoryStorageFactory(beanName string) glue.FactoryBean {
-	return &implInmemoryStorageFactory{beanName: beanName}
+func CacheStoreFactory(beanName string) glue.FactoryBean {
+	return &implCacheStoreFactory{beanName: beanName}
 }
 
-func (t *implInmemoryStorageFactory) Object() (object interface{}, err error) {
+func (t *implCacheStoreFactory) Object() (object interface{}, err error) {
 
 	defer util.PanicToError(&err)
 
 	return cachestore.New(t.beanName), nil
 }
 
-func (t *implInmemoryStorageFactory) ObjectType() reflect.Type {
+func (t *implCacheStoreFactory) ObjectType() reflect.Type {
 	return cachestore.ObjectType()
 }
 
-func (t *implInmemoryStorageFactory) ObjectName() string {
+func (t *implCacheStoreFactory) ObjectName() string {
 	return t.beanName
 }
 
-func (t *implInmemoryStorageFactory) Singleton() bool {
+func (t *implCacheStoreFactory) Singleton() bool {
 	return true
 }
 

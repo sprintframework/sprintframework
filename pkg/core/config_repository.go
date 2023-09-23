@@ -22,14 +22,14 @@ var (
 )
 
 /**
-	The purpose of this repository is to provide mutable property resolver that keeps state in the linked 'config-storage' store from 'core' context.
+	The purpose of this repository is to provide mutable property resolver that keeps state in the linked 'config-store' store from 'core' context.
 
 	Alex Shvid
  */
 
 type implConfigRepository struct {
 	sync.Mutex
-	Storage   store.DataStore  `inject:"bean=config-storage"`
+	Store   store.DataStore `inject:"bean=config-store"`
 
 	priority int
 
@@ -207,11 +207,11 @@ func (t *implConfigRepository) Watch(ctx context.Context, prefix string, cb func
 func (t *implConfigRepository) Backend() store.DataStore {
 	t.Lock()
 	defer t.Unlock()
-	return t.Storage
+	return t.Store
 }
 
-func (t *implConfigRepository) SetBackend(storage store.DataStore) {
+func (t *implConfigRepository) SetBackend(store store.DataStore) {
 	t.Lock()
 	defer t.Unlock()
-	t.Storage = storage
+	t.Store = store
 }

@@ -5,7 +5,7 @@ application:
   nat: "no"
   bootstrap-tokens: "boot"
 
-secure-storage:
+secure-store:
   split-key-value: false
 
 control-grpc-server:

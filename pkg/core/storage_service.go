@@ -30,10 +30,10 @@ type implStorageService struct {
 	Application sprint.Application `inject`
 	Properties  glue.Properties `inject`
 
-	StorageMap    map[string]store.ManagedDataStore `inject`
-	Log           *zap.Logger                           `inject`
+	StoreMap    map[string]store.ManagedDataStore `inject`
+	Log         *zap.Logger                       `inject`
 
-	availableStorages []string
+	availableStores  []string
 
 	BackupFilePerm   os.FileMode   `value:"application.perm.backup.file,default=-rw-rw-r--"`
 
@@ -45,11 +45,11 @@ func StorageService() sprint.StorageService {
 
 func (t *implStorageService) PostConstruct() error {
 	var names []string
-	for k, _ := range t.StorageMap {
+	for k, _ := range t.StoreMap {
 		names = append(names, k)
 	}
 	sort.Strings(names)
-	t.availableStorages = names
+	t.availableStores = names
 	return nil
 }
 
@@ -57,7 +57,7 @@ func (t *implStorageService) ExecuteQuery(name, query string, cb func(string) bo
 
 	defer util.PanicToError(&err)
 
-	s, ok := t.StorageMap[name]
+	s, ok := t.StoreMap[name]
 	if !ok {
 		return errors.Errorf("storage '%s' is not found", name)
 	}
@@ -81,7 +81,7 @@ func (t *implStorageService) ExecuteQuery(name, query string, cb func(string) bo
 			return server.ErrInterrupted
 		}
 	case "list":
-		if !cb(strings.Join(t.availableStorages, ", ")) {
+		if !cb(strings.Join(t.availableStores, ", ")) {
 			return server.ErrInterrupted
 		}
 	case "get":
@@ -141,7 +141,7 @@ func (t *implStorageService) ExecuteQuery(name, query string, cb func(string) bo
 
 func (t *implStorageService) Console(stream sprint.StorageConsoleStream) error {
 
-	defaultStorage := "config-storage"
+	defaultStorage := "config-store"
 
 	for {
 		request, err := stream.Recv()
@@ -151,10 +151,10 @@ func (t *implStorageService) Console(stream sprint.StorageConsoleStream) error {
 
 		if strings.HasPrefix(request.Query, "use ") {
 			newStorage := strings.TrimSpace(request.Query[4:])
-			if _, ok := t.StorageMap[newStorage]; !ok {
+			if _, ok := t.StoreMap[newStorage]; !ok {
 				rec := &sprintpb.StorageConsoleResponse{
 					Status:  200,
-					Content: fmt.Sprintf("error: storage '%s' not found, available storages '%+v", newStorage, t.availableStorages),
+					Content: fmt.Sprintf("error: storage '%s' not found, available storages '%+v", newStorage, t.availableStores),
 				}
 				err = stream.Send(rec)
 			} else {
@@ -204,7 +204,7 @@ func (t *implStorageService) Console(stream sprint.StorageConsoleStream) error {
 
 func (t *implStorageService) LocalConsole(writer io.StringWriter, errWriter io.StringWriter) error {
 
-	defaultStorage := "config-storage"
+	defaultStorage := "config-store"
 
 	for {
 		query := util.Prompt("Enter query [exit]: ")
@@ -215,14 +215,14 @@ func (t *implStorageService) LocalConsole(writer io.StringWriter, errWriter io.S
 			break
 		}
 		if query == "list" {
-			writer.WriteString(fmt.Sprintf("%+v\n", t.availableStorages))
+			writer.WriteString(fmt.Sprintf("%+v\n", t.availableStores))
 			continue
 		}
 
 		if strings.HasPrefix(query, "use ") {
 			newStorage := strings.TrimSpace(query[4:])
-			if _, ok := t.StorageMap[newStorage]; !ok {
-				errWriter.WriteString(fmt.Sprintf("error: storage '%s' not found, available storages '%+v\n", newStorage, t.availableStorages))
+			if _, ok := t.StoreMap[newStorage]; !ok {
+				errWriter.WriteString(fmt.Sprintf("error: storage '%s' not found, available storages '%+v\n", newStorage, t.availableStores))
 			} else {
 				defaultStorage = newStorage
 				writer.WriteString(fmt.Sprintf("selected storage '%s'\n", defaultStorage))
@@ -251,7 +251,7 @@ func (t *implStorageService) ExecuteCommand(cmd string, args []string) (answer s
 	start := time.Now()
 
 	if cmd == "list" {
-		return strings.Join(t.availableStorages, ", "), nil
+		return strings.Join(t.availableStores, ", "), nil
 	}
 
 	if len(args) < 1 {
@@ -261,7 +261,7 @@ func (t *implStorageService) ExecuteCommand(cmd string, args []string) (answer s
 	name := args[0]
 	args = args[1:]
 
-	s, ok := t.StorageMap[name]
+	s, ok := t.StoreMap[name]
 	if !ok {
 		return "", errors.Errorf("storage '%s' is not found", name)
 	}

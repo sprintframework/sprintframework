@@ -41,8 +41,8 @@ func doMain() (err error) {
 		app.WithBuild(Build),
 		app.Beans(app.DefaultApplicationBeans, app.DefaultResources, app.DefaultAssets, app.DefaultGzipAssets, cmd.DefaultCommands),
 		app.Core(core.CoreScanner(
-			core.BoltStorageFactory("config-storage"),
-			core.BadgerStorageFactory("secure-storage"),
+			core.BoltStoreFactory("config-store"),
+			core.BadgerStoreFactory("secure-store"),
 			core.AutoupdateService(),
 			core.LumberjackFactory(),
 			)),

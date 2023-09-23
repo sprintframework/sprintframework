@@ -8,7 +8,7 @@ package core
 import (
 	"fmt"
 	"github.com/codeallergy/glue"
-	"github.com/keyvalstore/bboltstore"
+	"github.com/keyvalstore/boltstore"
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/util"
 	"os"
@@ -16,7 +16,7 @@ import (
 	"reflect"
 )
 
-type implBBoltStorageFactory struct {
+type implBoltStoreFactory struct {
 	beanName        string
 
 	Application      sprint.Application      `inject`
@@ -28,11 +28,11 @@ type implBBoltStorageFactory struct {
 	DataFilePerm      os.FileMode  `value:"application.perm.data.file,default=-rw-rw-r--"`
 }
 
-func BBoltStorageFactory(beanName string) glue.FactoryBean {
-	return &implBBoltStorageFactory{beanName: beanName}
+func BoltStoreFactory(beanName string) glue.FactoryBean {
+	return &implBoltStoreFactory{beanName: beanName}
 }
 
-func (t *implBBoltStorageFactory) Object() (object interface{}, err error) {
+func (t *implBoltStoreFactory) Object() (object interface{}, err error) {
 
 	defer util.PanicToError(&err)
 
@@ -53,21 +53,21 @@ func (t *implBBoltStorageFactory) Object() (object interface{}, err error) {
 	fileName := fmt.Sprintf("%s.db", t.beanName)
 	dataFile := filepath.Join(dataDir, fileName)
 
-	return bboltstore.New(t.beanName, dataFile, t.DataFilePerm)
+	return boltstore.New(t.beanName, dataFile, t.DataFilePerm)
 }
 
-func (t *implBBoltStorageFactory) ObjectType() reflect.Type {
-	return bboltstore.ObjectType()
+func (t *implBoltStoreFactory) ObjectType() reflect.Type {
+	return boltstore.ObjectType()
 }
 
-func (t *implBBoltStorageFactory) ObjectName() string {
+func (t *implBoltStoreFactory) ObjectName() string {
 	return t.beanName
 }
 
-func (t *implBBoltStorageFactory) Singleton() bool {
+func (t *implBoltStoreFactory) Singleton() bool {
 	return true
 }
 
-func (t *implBBoltStorageFactory) getNodeName() string {
+func (t *implBoltStoreFactory) getNodeName() string {
 	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

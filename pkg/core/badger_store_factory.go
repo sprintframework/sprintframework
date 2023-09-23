@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-type implBadgerStorageFactory struct {
+type implBadgerStoreFactory struct {
 	beanName          string
 
 	Log                               *zap.Logger                           `inject`
@@ -33,11 +33,11 @@ type implBadgerStorageFactory struct {
 
 }
 
-func BadgerStorageFactory(beanName string) glue.FactoryBean {
-	return &implBadgerStorageFactory{beanName: beanName}
+func BadgerStoreFactory(beanName string) glue.FactoryBean {
+	return &implBadgerStoreFactory{beanName: beanName}
 }
 
-func (t *implBadgerStorageFactory) Object() (object interface{}, err error) {
+func (t *implBadgerStoreFactory) Object() (object interface{}, err error) {
 
 	defer util.PanicToError(&err)
 
@@ -110,18 +110,18 @@ func (t *implBadgerStorageFactory) Object() (object interface{}, err error) {
 
 }
 
-func (t *implBadgerStorageFactory) ObjectType() reflect.Type {
+func (t *implBadgerStoreFactory) ObjectType() reflect.Type {
 	return badgerstore.ObjectType()
 }
 
-func (t *implBadgerStorageFactory) ObjectName() string {
+func (t *implBadgerStoreFactory) ObjectName() string {
 	return t.beanName
 }
 
-func (t *implBadgerStorageFactory) Singleton() bool {
+func (t *implBadgerStoreFactory) Singleton() bool {
 	return true
 }
 
-func (t *implBadgerStorageFactory) getNodeName() string {
+func (t *implBadgerStoreFactory) getNodeName() string {
 	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }
