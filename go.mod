@@ -2,9 +2,9 @@ module github.com/sprintframework/sprintframework
 
 go 1.17
 
-replace github.com/codeallergy/glue => ../../codeallergy/glue
+//replace github.com/codeallergy/glue => ../../codeallergy/glue
 
-replace github.com/sprintframework/sprint => ../../sprintframework/sprint
+//replace github.com/sprintframework/sprint => ../../sprintframework/sprint
 
 require (
 	github.com/codeallergy/base62 v1.1.0
@@ -23,7 +23,7 @@ require (
 	github.com/sprintframework/cert v1.0.0
 	github.com/sprintframework/dns v1.0.0 // indirect
 	github.com/sprintframework/nat v1.0.0
-	github.com/sprintframework/sprint v1.3.9
+	github.com/sprintframework/sprint v1.3.10
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.24.0
