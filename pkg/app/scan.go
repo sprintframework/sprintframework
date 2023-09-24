@@ -13,7 +13,9 @@ import (
 	"os"
 )
 
-var DefaultFileModes = map[string]interface{} {
+type FileModes map[string]interface{}
+
+var DefaultFileModes = FileModes {
 	"log.dir": os.FileMode(0775),
 	"log.file": os.FileMode(0664),
 	"backup.file": os.FileMode(0664),
@@ -42,8 +44,27 @@ var DefaultGzipAssets = &glue.ResourceSource{
 	AssetFiles: assetsgz.AssetFile(),
 }
 
-var DefaultApplicationBeans = []interface{}{
-	ApplicationFlags(100000), // override any property resolvers
-	FlagSetFactory(),
-	ResourceService(),
+type applicationScanner struct {
+	scan []interface{}
 }
+
+func ApplicationScanner(scan... interface{}) glue.Scanner {
+	return &applicationScanner{
+		scan: scan,
+	}
+}
+
+func (t *applicationScanner) Beans() []interface{} {
+
+	beans := []interface{}{
+		ApplicationFlags(100000), // override any property resolvers
+		FlagSetFactory(),
+		ResourceService(),
+		&struct {
+			ChildContexts []glue.ChildContext `inject`
+		}{},
+	}
+
+	return append(beans, t.scan...)
+}
+

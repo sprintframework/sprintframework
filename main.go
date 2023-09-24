@@ -7,7 +7,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
+	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/app"
 	"github.com/sprintframework/sprintframework/pkg/client"
 	"github.com/sprintframework/sprintframework/pkg/cmd"
@@ -36,29 +38,41 @@ func doMain() (err error) {
 		}
 	}()
 
-	return app.Application("sprint",
-		app.WithVersion(Version),
-		app.WithBuild(Build),
-		app.Beans(app.DefaultApplicationBeans, app.DefaultResources, app.DefaultAssets, app.DefaultGzipAssets, cmd.DefaultCommands),
-		app.Core(core.CoreScanner(
+	beans := []interface{} {
+		app.ApplicationScanner(app.DefaultResources, app.DefaultAssets, app.DefaultGzipAssets, cmd.DefaultCommands),
+
+		glue.Child(sprint.CoreRole,
+			core.CoreScanner(),
 			core.BoltStoreFactory("config-store"),
 			core.BadgerStoreFactory("secure-store"),
 			core.AutoupdateService(),
 			core.LumberjackFactory(),
-			)),
-		app.Server(server.GrpcServerScanner("control-grpc-server",
-			server.ControlServer(),
-			server.HttpServerFactory("control-gateway-server"),
-			//server.TlsConfigFactory("tls-config"),
-			server.TemplatePage("/", "resources:templates/index.tmpl"),
-			)),
-		app.Server(server.HttpServerScanner("redirect-https", server.RedirectHttpsPage("redirect-https"))),
-		app.Client(client.ClientScanner("control",
+
+			glue.Child(sprint.ServerRole,
+				server.GrpcServerScanner("control-grpc-server"),
+				server.ControlServer(),
+				server.HttpServerFactory("control-gateway-server"),
+				//server.TlsConfigFactory("tls-config"),
+				server.TemplatePage("/", "resources:templates/index.tmpl"),
+				),
+
+			glue.Child(sprint.ServerRole,
+				server.HttpServerScanner("redirect-https"),
+				server.RedirectHttpsPage("redirect-https"),
+				),
+			),
+		glue.Child(sprint.ControlClientRole,
+			client.ClientScanner(),
 			client.GrpcClientFactory("control-grpc-client"),
 			client.ControlClient(),
 			//client.AnyTlsConfigFactory("client-tls-config"),
-			)),
-		).
+			),
+	}
+
+	return app.Application("sprint",
+		app.WithVersion(Version),
+		app.WithBuild(Build),
+		app.WithBeans(beans)).
 		Run(os.Args[1:])
 
 }

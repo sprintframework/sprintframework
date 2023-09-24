@@ -6,27 +6,22 @@
 package client
 
 import (
+	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
 	"google.golang.org/grpc"
 )
 
 type clientScanner struct {
-	Name          string
-	Scan         []interface{}
+	scan []interface{}
 }
 
-func ClientScanner(scannerName string, scan... interface{}) sprint.ClientScanner {
+func ClientScanner(scan... interface{}) glue.Scanner {
 	return &clientScanner{
-		Name: scannerName,
-		Scan: scan,
+		scan: scan,
 	}
 }
 
-func (t *clientScanner) ScannerName() string {
-	return t.Name
-}
-
-func (t *clientScanner) ClientBeans() []interface{} {
+func (t *clientScanner) Beans() []interface{} {
 	beans := []interface{}{
 		&struct {
 			// make them visible
@@ -34,24 +29,20 @@ func (t *clientScanner) ClientBeans() []interface{} {
 			ControlClient []sprint.ControlClient `inject:"optional"`
 		}{},
 	}
-	return append(beans, t.Scan...)
+	return append(beans, t.scan...)
 }
 
 type controlClientScanner struct {
-	Scan         []interface{}
+	scan []interface{}
 }
 
-func ControlClientScanner(scan... interface{}) sprint.ClientScanner {
+func ControlClientScanner(scan... interface{}) glue.Scanner {
 	return &controlClientScanner{
-		Scan: scan,
+		scan: scan,
 	}
 }
 
-func (t *controlClientScanner) ScannerName() string {
-	return "control"
-}
-
-func (t *controlClientScanner) ClientBeans() []interface{} {
+func (t *controlClientScanner) Beans() []interface{} {
 	beans := []interface{}{
 		GrpcClientFactory("control-grpc-client"),
 		ControlClient(),
@@ -61,6 +52,6 @@ func (t *controlClientScanner) ClientBeans() []interface{} {
 			ControlClient []sprint.ControlClient `inject:"optional"`
 		}{},
 	}
-	return append(beans, t.Scan...)
+	return append(beans, t.scan...)
 }
 

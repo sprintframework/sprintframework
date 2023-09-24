@@ -40,26 +40,22 @@ func doWithServers(core glue.Context, cb func([]sprint.Server) error) (err error
 		}
 
 		if len(listErr) > 0 {
-			err = errors.Errorf("%v", listErr)
+			err = errors.Errorf("%+v", listErr)
 		}
 
 	}()
 
-	list := core.Bean(sprint.ServerScannerClass, glue.DefaultLevel)
+	list:= sprint.FilterChildrenByRole(core, sprint.ServerRole)
 	if len(list) == 0 {
-		return errors.New("no one sprint.ServerScanner found in core context")
+		return errors.New("no one server child context found in core context")
 	}
 
-	for i, s := range list {
-		scanner, ok := s.Object().(sprint.ServerScanner)
-		if !ok {
-			return errors.Errorf("invalid object found for sprint.ServerScanner on position %d in core context", i)
+	for _, child := range list {
+		if ctx, err := child.Object(); err != nil {
+			return errors.Errorf("server creation context %v failed by %v", child, err)
+		} else {
+			contextList = append(contextList, ctx)
 		}
-		ctx, err := core.Extend(scanner.ServerBeans()...)
-		if err != nil {
-			return errors.Errorf("server creation context %v failed by %v", s, err)
-		}
-		contextList = append(contextList, ctx)
 	}
 
 	var serverList []sprint.Server
@@ -187,12 +183,12 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 
 func doInCore(parent glue.Context, withBean interface{}, cb func(core glue.Context) error) error {
 
-	list := parent.Bean(sprint.CoreScannerClass, glue.DefaultLevel)
+	list := sprint.FilterChildrenByRole(parent, sprint.CoreRole)
 	if len(list) != 1 {
-		return errors.Errorf("expected one core scanner in context, but found %d", len(list))
+		return errors.Errorf("expected only one core child context, but found %d", len(list))
 	}
 
-	core, err := parent.Extend(list[0].Object().(sprint.CoreScanner).CoreBeans()...)
+	core, err := list[0].Object()
 	if err != nil {
 		return errors.Errorf("failed to create core context, %v", err)
 	}

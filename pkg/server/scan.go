@@ -6,22 +6,23 @@
 package server
 
 import (
+	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
 	"net/http"
 	"google.golang.org/grpc"
 )
 
 type serverScanner struct {
-	Scan         []interface{}
+	scan []interface{}
 }
 
-func ServerScanner(scan... interface{}) sprint.ServerScanner {
+func ServerScanner(scan... interface{}) glue.Scanner {
 	return &serverScanner{
-		Scan: scan,
+		scan: scan,
 	}
 }
 
-func (t *serverScanner) ServerBeans() []interface{} {
+func (t *serverScanner) Beans() []interface{} {
 	beans := []interface{}{
 		&struct {
 			// make them visible
@@ -30,22 +31,22 @@ func (t *serverScanner) ServerBeans() []interface{} {
 			HttpServers []*http.Server `inject:"optional"`
 		}{},
 	}
-	return append(beans, t.Scan...)
+	return append(beans, t.scan...)
 }
 
 type grpcServerScanner struct {
-	beanName    string
-	Scan         []interface{}
+	beanName string
+	scan     []interface{}
 }
 
-func GrpcServerScanner(beanName string, scan... interface{}) sprint.ServerScanner {
+func GrpcServerScanner(beanName string, scan... interface{}) glue.Scanner {
 	return &grpcServerScanner{
 		beanName: beanName,
-		Scan: scan,
+		scan:     scan,
 	}
 }
 
-func (t *grpcServerScanner) ServerBeans() []interface{} {
+func (t *grpcServerScanner) Beans() []interface{} {
 	beans := []interface{}{
 		AuthorizationMiddleware(),
 		GrpcServerFactory(t.beanName),
@@ -56,22 +57,22 @@ func (t *grpcServerScanner) ServerBeans() []interface{} {
 			HttpServers []*http.Server `inject:"optional"`
 		}{},
 	}
-	return append(beans, t.Scan...)
+	return append(beans, t.scan...)
 }
 
 type httpServerScanner struct {
-	beanName    string
-	Scan         []interface{}
+	beanName string
+	scan     []interface{}
 }
 
-func HttpServerScanner(beanName string, scan... interface{}) sprint.ServerScanner {
+func HttpServerScanner(beanName string, scan... interface{}) glue.Scanner {
 	return &httpServerScanner{
 		beanName: beanName,
-		Scan: scan,
+		scan:     scan,
 	}
 }
 
-func (t *httpServerScanner) ServerBeans() []interface{} {
+func (t *httpServerScanner) Beans() []interface{} {
 	beans := []interface{}{
 		HttpServerFactory(t.beanName),
 		&struct {
@@ -79,7 +80,7 @@ func (t *httpServerScanner) ServerBeans() []interface{} {
 			HttpServers []*http.Server `inject`
 		}{},
 	}
-	return append(beans, t.Scan...)
+	return append(beans, t.scan...)
 }
 
 

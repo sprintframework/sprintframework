@@ -25,7 +25,7 @@ type implRunNode struct {
 	SystemEnvironmentPropertyResolver sprint.SystemEnvironmentPropertyResolver `inject`
 	Context                           glue.Context                             `inject`
 	StartNode                         *implStartNode                           `inject`
-	CoreScanner                       sprint.CoreScanner                       `inject`
+	Children                          []glue.ChildContext                      `inject:"level=1"`
 
 	LogDir         string        `value:"application.log.dir,default="`
 	LogDirPerm     os.FileMode   `value:"application.perm.log.dir,default=-rwxrwxr-x"`
@@ -103,13 +103,24 @@ func (t *implRunNode) Destroy() error {
 
 func (t *implRunNode) Run(args []string) (err error) {
 
-	beans := t.CoreScanner.CoreBeans()
 	if t.ApplicationFlags.Verbose() {
-		verbose := glue.Verbose{ Log: t.lazyStartLog() }
-		beans = append([]interface{}{verbose}, beans...)
+		glue.Verbose(t.lazyStartLog())
 	}
 
-	core, err := t.Context.Extend(beans...)
+	var coreContext glue.ChildContext
+
+	for _, child := range t.Children {
+		if child.Role() == sprint.CoreRole {
+			coreContext = child
+			break
+		}
+	}
+
+	if coreContext == nil {
+		return errors.Errorf("core context not found in %+v", t.Children)
+	}
+
+	core, err := coreContext.Object()
 	if err != nil {
 		msg := fmt.Sprintf("core creation context failed by %v, used environment variables %+v", err, t.SystemEnvironmentPropertyResolver.Environ(false))
 		t.lazyStartLog().Println(msg)

@@ -6,20 +6,20 @@
 package core
 
 import (
-	"github.com/sprintframework/sprint"
+	"github.com/codeallergy/glue"
 )
 
 type coreScanner struct {
-	Scan     []interface{}
+	scan []interface{}
 }
 
-func CoreScanner(scan... interface{}) sprint.CoreScanner {
+func CoreScanner(scan... interface{}) glue.Scanner {
 	return &coreScanner {
-		Scan: scan,
+		scan: scan,
 	}
 }
 
-func (t *coreScanner) CoreBeans() []interface{} {
+func (t *coreScanner) Beans() []interface{} {
 
 	beans := []interface{}{
 		ZapLogFactory(),
@@ -30,11 +30,10 @@ func (t *coreScanner) CoreBeans() []interface{} {
 		StorageService(),
 		MailService(),
 		&struct {
-			ClientScanners []sprint.ClientScanner `inject`
-			ServerScanners []sprint.ServerScanner `inject`
+			ChildContexts []glue.ChildContext `inject`
 		}{},
 	}
 
-	return append(beans, t.Scan...)
+	return append(beans, t.scan...)
 }
 

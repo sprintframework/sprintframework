@@ -43,16 +43,7 @@ func WithNope() Option {
 	})
 }
 
-// option that adds name to application
-func WithName(name string) Option {
-	return optionFunc(func(a sprint.Application) {
-		if app, ok := a.(*application); ok {
-			app.applicationName = name
-		}
-	})
-}
-
-// option that adds version to application
+// option that adds version
 func WithVersion(version string) Option {
 	return optionFunc(func(a sprint.Application) {
 		if app, ok := a.(*application); ok {
@@ -61,6 +52,7 @@ func WithVersion(version string) Option {
 	})
 }
 
+// option that adds build number
 func WithBuild(build string) Option {
 	return optionFunc(func(a sprint.Application) {
 		if app, ok := a.(*application); ok {
@@ -69,30 +61,22 @@ func WithBuild(build string) Option {
 	})
 }
 
-func Beans(beans ...interface{}) Option {
+// option that adds beans to the root context
+func WithBeans(beans ...interface{}) Option {
 	return optionFunc(func(a sprint.Application) {
 		a.AppendBeans(beans...)
 	})
 }
 
-func Core(scanner sprint.CoreScanner) Option {
-	return optionFunc(func(a sprint.Application) {
-		a.AppendBeans(scanner)
-	})
-}
+/**
+Application is the super context where everything exist, something like an universe
+with beans, properties, commands, clients, servers, options, core functionality etc.
 
-func Server(scanner sprint.ServerScanner) Option {
-	return optionFunc(func(a sprint.Application) {
-		a.AppendBeans(scanner)
-	})
-}
+Without application all other stuff does not have a footprint in this virtual world.
 
-func Client(scanner sprint.ClientScanner) Option {
-	return optionFunc(func(a sprint.Application) {
-		a.AppendBeans(scanner)
-	})
-}
-
+Programmer is something like a God for the application, who defines all those spices,
+actors, relations, hierarchies, lifecycles, permissions and etc.
+ */
 type application struct {
 
 	beans []interface{}

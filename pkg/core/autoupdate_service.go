@@ -138,7 +138,9 @@ func (t *implAutoupdateService) onEvent(event fsnotify.Event) {
 
 func (t *implAutoupdateService) Destroy() error {
 	t.closeOnce.Do(func() {
-		t.watcher.Close()
+		if t.watcher != nil {
+			t.watcher.Close()
+		}
 	})
 	return nil
 }
