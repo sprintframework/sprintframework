@@ -10,7 +10,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/keyvalstore/bboltstore"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -34,19 +34,19 @@ func BBoltStoreFactory(beanName string) glue.FactoryBean {
 
 func (t *implBBoltStoreFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	dataDir := t.DataDir
 	if dataDir == "" {
 		dataDir = filepath.Join(t.Application.ApplicationDir(), "db")
 
-		if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+		if err := sprintutils.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 			return nil, err
 		}
 
 		dataDir = filepath.Join(dataDir, t.getNodeName())
 	}
-	if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+	if err := sprintutils.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 		return nil, err
 	}
 
@@ -69,5 +69,5 @@ func (t *implBBoltStoreFactory) Singleton() bool {
 }
 
 func (t *implBBoltStoreFactory) getNodeName() string {
-	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
+	return sprintutils.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

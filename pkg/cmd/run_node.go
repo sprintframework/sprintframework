@@ -10,7 +10,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"io"
 	"log"
@@ -48,13 +48,13 @@ func (t *implRunNode) createLogFile() (string, error) {
 		logDir = filepath.Join(t.Application.ApplicationDir(), "log")
 	}
 
-	if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+	if err := sprintutils.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
 		return "", err
 	}
 
 	logDir = filepath.Join(logDir, t.getNodeName())
 
-	if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+	if err := sprintutils.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
 		return "", err
 	}
 
@@ -183,7 +183,7 @@ func (t *implRunNode) Run(args []string) (err error) {
 }
 
 func (t *implRunNode) getNodeName() string {
-	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
+	return sprintutils.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }
 
 func findZapLogger(core glue.Context) (*zap.Logger, bool) {

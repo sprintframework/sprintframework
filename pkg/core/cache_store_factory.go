@@ -8,7 +8,7 @@ package core
 import (
 	"github.com/codeallergy/glue"
 	"github.com/keyvalstore/cachestore"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"reflect"
 )
 
@@ -22,7 +22,7 @@ func CacheStoreFactory(beanName string) glue.FactoryBean {
 
 func (t *implCacheStoreFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	return cachestore.New(t.beanName), nil
 }

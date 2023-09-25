@@ -8,7 +8,7 @@ package core
 import (
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"reflect"
 )
@@ -23,7 +23,7 @@ func HCLogFactory() glue.FactoryBean {
 
 func (t *implHCLogFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	return newHCLogAdapter(t.Log), nil
 }

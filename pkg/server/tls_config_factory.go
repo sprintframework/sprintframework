@@ -12,7 +12,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/cert"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"reflect"
 )
 
@@ -32,7 +32,7 @@ func TlsConfigFactory(beanName string) glue.FactoryBean {
 
 func (t *implTlsConfigFactory) Object() (obj interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	insecure := t.Properties.GetBool(fmt.Sprintf("%s.insecure", t.beanName), false)
 

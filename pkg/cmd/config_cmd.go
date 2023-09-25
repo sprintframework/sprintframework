@@ -7,11 +7,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
-	"github.com/sprintframework/sprintframework/pkg/app"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/pkg/app"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"io"
@@ -119,14 +119,14 @@ func (t *implConfigCommand) setConfig(args []string) error {
 	if len(args) < 1 {
 		if app.IsPEMProperty(key) {
 			var err error
-			value, err = util.PromptPEM("Enter PEM key: ")
+			value, err = sprintutils.PromptPEM("Enter PEM key: ")
 			if err != nil {
 				return err
 			}
 		} else if app.IsPasswordProperty(key) {
-			value = util.PromptPassword("Enter password: ")
+			value = sprintutils.PromptPassword("Enter password: ")
 		} else {
-			value = util.Prompt("Enter value: ")
+			value = sprintutils.Prompt("Enter value: ")
 		}
 
 	} else {

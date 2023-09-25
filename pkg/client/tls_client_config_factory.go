@@ -9,11 +9,11 @@ import (
 	"crypto/rand"
 	"crypto/tls"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
 	"github.com/codeallergy/properties"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"path/filepath"
 	"reflect"
 )
@@ -38,7 +38,7 @@ func TlsConfigFactory(beanName string) glue.FactoryBean {
 
 func (t *tlsConfigFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	appDir := properties.Locate(t.CompanyName).GetDir(t.Application.Name())
 

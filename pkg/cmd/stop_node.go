@@ -10,7 +10,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -80,5 +80,5 @@ func (t *implStopNode) KillServer() error {
 }
 
 func (t *implStopNode) getNodeName() string {
-	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
+	return sprintutils.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

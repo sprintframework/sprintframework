@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-package util
+package sprintutils
 
 import (
 	rt "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"

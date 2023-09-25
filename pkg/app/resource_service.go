@@ -6,10 +6,10 @@
 package app
 
 import (
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	htmlTemplate "html/template"
 	"io/ioutil"
 	"strings"
@@ -32,7 +32,7 @@ func ResourceService() sprint.ResourceService {
 
 func (t *implResourceService) GetResource(name string) (content []byte, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	res, ok := t.Context.Resource(name)
 	if !ok {

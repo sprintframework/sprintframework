@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-package util_test
+package sprintutils_test
 
 import (
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
@@ -26,7 +26,7 @@ func TestParseFileMode(t *testing.T) {
 		str := mode.String()
 		require.Equal(t, expected, str)
 
-		actual := util.ParseFileMode(str)
+		actual := sprintutils.ParseFileMode(str)
 		require.Equal(t, mode, actual, mode.String())
 
 	}

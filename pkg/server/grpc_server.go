@@ -8,10 +8,10 @@ package server
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -62,7 +62,7 @@ func (t *implGrpcServer) Bind() (err error) {
 		return errors.Errorf("property '%s.bind-address' not found in server context", t.beanName)
 	}
 
-	tcpAddr, err := util.ParseAndAdjustTCPAddr(t.listenAddr, t.NodeService.NodeSeq())
+	tcpAddr, err := sprintutils.ParseAndAdjustTCPAddr(t.listenAddr, t.NodeService.NodeSeq())
 	if err != nil {
 		return
 	}
@@ -168,7 +168,7 @@ func (t *implGrpcServer) Destroy() error {
 
 func (t *implGrpcServer) Serve() (err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	if t.TlsConfig != nil {
 		t.Log.Info("GrpcServerServe",

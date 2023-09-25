@@ -8,7 +8,7 @@ package server
 import (
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -28,7 +28,7 @@ func HealthcheckerFactory(enableServices bool) glue.FactoryBean {
 
 func (t *implHealthcheckerFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	srv := health.NewServer()
 

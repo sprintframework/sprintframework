@@ -10,10 +10,10 @@ import (
 	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
+	"os/user"
 	"strings"
 	"time"
-	"os/user"
 )
 
 type implSetupCommand struct {
@@ -50,7 +50,7 @@ func (t *implSetupCommand) Synopsis() string {
 
 func (t *implSetupCommand) Run(args []string) error {
 
-	boot, err := util.GenerateToken()
+	boot, err := sprintutils.GenerateToken()
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func (t *implSetupCommand) Run(args []string) error {
 			return err
 		}
 		if secret == "" {
-			secret, err = util.GenerateToken()
+			secret, err = sprintutils.GenerateToken()
 			if err != nil {
 				return err
 			}
@@ -107,7 +107,7 @@ func (t *implSetupCommand) Run(args []string) error {
 		ExpiresAt: time.Now().Unix() + 356*24*3600,
 	}
 
-	auth, err := util.GenerateAuthToken(secretKey, authUser)
+	auth, err := sprintutils.GenerateAuthToken(secretKey, authUser)
 	if err != nil {
 		return err
 	}

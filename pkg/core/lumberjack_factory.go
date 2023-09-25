@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"path/filepath"
@@ -43,17 +43,17 @@ func (t *implLumberjackFactory) Object() (object interface{}, err error) {
 		logDir = filepath.Join(t.Application.ApplicationDir(), "log")
 	}
 
-	if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+	if err := sprintutils.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
 		return nil, err
 	}
 	logDir = filepath.Join(logDir, t.getNodeName())
 
-	if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+	if err := sprintutils.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
 		return nil, err
 	}
 
 	logFile := filepath.Join(logDir, fmt.Sprintf("%s.log", t.Application.Name()) )
-	if err := util.CreateFileIfNeeded(logFile, t.LogFilePerm); err != nil {
+	if err := sprintutils.CreateFileIfNeeded(logFile, t.LogFilePerm); err != nil {
 		return nil, err
 	}
 
@@ -92,5 +92,5 @@ func (t *implLumberjackFactory) Singleton() bool {
 }
 
 func (t *implLumberjackFactory) getNodeName() string {
-	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
+	return sprintutils.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

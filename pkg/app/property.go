@@ -8,7 +8,7 @@ package app
 import (
 	"fmt"
 	"github.com/codeallergy/glue"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"os"
 	"strings"
 	"sync"
@@ -74,7 +74,7 @@ func (t *systemEnvironmentPropertyResolver) PromptProperty(key string) (string, 
 
 		value := os.Getenv(env)
 		if value == "" {
-			value = util.PromptPassword(fmt.Sprintf("Enter Environment %s :", env))
+			value = sprintutils.PromptPassword(fmt.Sprintf("Enter Environment %s :", env))
 		}
 
 		t.Lock()

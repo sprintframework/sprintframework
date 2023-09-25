@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"net"
@@ -43,7 +43,7 @@ func (t *implHttpServer) PostConstruct() error {
 
 func (t *implHttpServer) Bind() (err error) {
 
-	tcpAddr, err := util.ParseAndAdjustTCPAddr(t.srv.Addr, t.NodeService.NodeSeq())
+	tcpAddr, err := sprintutils.ParseAndAdjustTCPAddr(t.srv.Addr, t.NodeService.NodeSeq())
 	if err != nil {
 		return
 	}
@@ -103,7 +103,7 @@ func (t *implHttpServer) Destroy() error {
 
 func (t *implHttpServer) Serve() (err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	if t.srv.TLSConfig != nil {
 		t.Log.Info("HttpServerServe",

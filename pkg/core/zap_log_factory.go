@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -37,7 +37,7 @@ func ZapLogFactory() glue.FactoryBean {
 
 func (t *implZapLogFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	if t.ApplicationFlags.Daemon() {
 
@@ -61,19 +61,19 @@ func (t *implZapLogFactory) Object() (object interface{}, err error) {
 				logDir = filepath.Join(t.Application.ApplicationDir(), "log")
 			}
 
-			if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+			if err := sprintutils.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
 				return nil, err
 			}
 
 			logDir = filepath.Join(logDir, t.getNodeName())
 
-			if err := util.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
+			if err := sprintutils.CreateDirIfNeeded(logDir, t.LogDirPerm); err != nil {
 				return nil, err
 			}
 
 			logFile := filepath.Join(logDir, fmt.Sprintf("%s.log", t.Application.Name()) )
 
-			if err := util.CreateFileIfNeeded(logFile, t.LogFilePerm); err != nil {
+			if err := sprintutils.CreateFileIfNeeded(logFile, t.LogFilePerm); err != nil {
 				return nil, err
 			}
 
@@ -103,5 +103,5 @@ func (t *implZapLogFactory) Singleton() bool {
 }
 
 func (t *implZapLogFactory) getNodeName() string {
-	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
+	return sprintutils.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

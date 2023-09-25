@@ -9,11 +9,11 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/codeallergy/glue"
-	"github.com/sprintframework/sprint"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	rt "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/pkg/errors"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/acme/autocert"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -45,7 +45,7 @@ func (t *implHttpServerFactory) isEnabled(name string) bool {
 
 func (t *implHttpServerFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	listenAddr := t.Properties.GetString(fmt.Sprintf("%s.%s", t.beanName, "bind-address"), "")
 

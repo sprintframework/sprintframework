@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/metadata"
 	"os/user"
@@ -42,7 +42,7 @@ func (t *implAuthorizationMiddleware) PostConstruct() (err error) {
 	secret := t.Properties.GetString("jwt.secret.key", "")
 
 	if secret == "" {
-		secret, err = util.GenerateToken()
+		secret, err = sprintutils.GenerateToken()
 		if err != nil {
 			return err
 		}
@@ -86,7 +86,7 @@ func (t *implAuthorizationMiddleware) generateDefaultAuthToken(secret string) (s
 		ExpiresAt: time.Now().Unix() + 356*24*3600,
 	}
 
-	return util.GenerateAuthToken(secretKey, u)
+	return sprintutils.GenerateAuthToken(secretKey, u)
 }
 
 func (t *implAuthorizationMiddleware) Authenticate(ctx context.Context) (outCtx context.Context, err error) {
@@ -139,7 +139,7 @@ func (t *implAuthorizationMiddleware) doAuthenticate(ctx context.Context) (*spri
 		return nil, false
 	}
 
-	user, err := util.VerifyAuthToken(t.secretKey, token)
+	user, err := sprintutils.VerifyAuthToken(t.secretKey, token)
 	if err != nil {
 		return nil, false
 	}
@@ -179,11 +179,11 @@ func (t *implAuthorizationMiddleware) UserContext(ctx context.Context, name stri
 }
 
 func (t *implAuthorizationMiddleware) GenerateToken(user *sprint.AuthorizedUser) (string, error) {
-	return util.GenerateAuthToken(t.secretKey, user)
+	return sprintutils.GenerateAuthToken(t.secretKey, user)
 }
 
 func (t *implAuthorizationMiddleware) ParseToken(token string) (*sprint.AuthorizedUser, error) {
-	return util.VerifyAuthToken(t.secretKey, token)
+	return sprintutils.VerifyAuthToken(t.secretKey, token)
 }
 
 func (t *implAuthorizationMiddleware) InvalidateToken(token string) {

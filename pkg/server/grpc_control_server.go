@@ -9,13 +9,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/cert"
 	"github.com/sprintframework/nat"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintpb"
 	"github.com/sprintframework/sprintframework/pkg/app"
-	"github.com/sprintframework/sprintframework/pkg/util"
-	"github.com/pkg/errors"
+	"github.com/sprintframework/sprintframework/sprintutils"
+	"github.com/sprintframework/sprintpb"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -77,13 +77,13 @@ func ControlServer() sprint.Component {
 
 func (t *implGrpcControlServer) PostConstruct() (err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	sprintpb.RegisterControlServiceServer(t.GrpcServer, t)
 	reflection.Register(t.GrpcServer)
 
 	if t.GatewayServer != nil {
-		api, err := util.FindGatewayHandler(t.GatewayServer, "/api/")
+		api, err := sprintutils.FindGatewayHandler(t.GatewayServer, "/api/")
 		if err != nil {
 			return err
 		}
@@ -191,7 +191,7 @@ func (t *implGrpcControlServer) Node(ctx context.Context, req *sprintpb.Command)
 
 func (t *implGrpcControlServer) Config(ctx context.Context, req *sprintpb.Command) (resp *sprintpb.CommandResult, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	user, ok := t.AuthorizationMiddleware.GetUser(ctx)
 	if !ok {
@@ -320,7 +320,7 @@ func (t *implGrpcControlServer) configList(args []string) (resp *sprintpb.Comman
 
 func (t *implGrpcControlServer) Certificate(ctx context.Context, req *sprintpb.Command) (resp *sprintpb.CommandResult, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	user, ok := t.AuthorizationMiddleware.GetUser(ctx)
 	if !ok {
@@ -359,7 +359,7 @@ func (t *implGrpcControlServer) Certificate(ctx context.Context, req *sprintpb.C
 
 func (t *implGrpcControlServer) Job(ctx context.Context, req *sprintpb.Command) (resp *sprintpb.CommandResult, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	if !t.AuthorizationMiddleware.HasUserRole(ctx, "ADMIN") {
 			return nil, ErrAuthAdminRequired
@@ -376,7 +376,7 @@ func (t *implGrpcControlServer) Job(ctx context.Context, req *sprintpb.Command) 
 
 func (t *implGrpcControlServer) Storage(ctx context.Context, req *sprintpb.Command) (resp *sprintpb.CommandResult, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	if !t.AuthorizationMiddleware.HasUserRole(ctx, "ADMIN") {
 		return nil, ErrAuthAdminRequired
@@ -395,7 +395,7 @@ func (t *implGrpcControlServer) Storage(ctx context.Context, req *sprintpb.Comma
 
 func (t *implGrpcControlServer) StorageConsole(stream sprintpb.ControlService_StorageConsoleServer) (err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	if !t.AuthorizationMiddleware.HasUserRole(stream.Context(), "ADMIN") {
 		return ErrAuthAdminRequired

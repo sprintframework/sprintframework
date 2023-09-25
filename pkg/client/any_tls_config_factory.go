@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"reflect"
 )
 
@@ -26,7 +26,7 @@ func AnyTlsConfigFactory(beanName string) glue.FactoryBean {
 
 func (t *implAnyTlsConfigFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	insecure := t.Properties.GetBool(fmt.Sprintf("%s.insecure", t.beanName), false)
 

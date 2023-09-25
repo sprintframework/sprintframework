@@ -10,7 +10,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"github.com/sprintframework/sprintpb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -196,7 +196,7 @@ func (t *implControlClient) StorageConsole(writer io.StringWriter, errWriter io.
 	}()
 
 	for {
-		query := util.Prompt("Enter query [exit]: ")
+		query := sprintutils.Prompt("Enter query [exit]: ")
 		if query == "" {
 			continue
 		}

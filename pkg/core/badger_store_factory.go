@@ -7,11 +7,11 @@ package core
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/keyvalstore/badgerstore"
 	"github.com/codeallergy/glue"
+	"github.com/keyvalstore/badgerstore"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"os"
 	"path/filepath"
@@ -39,7 +39,7 @@ func BadgerStoreFactory(beanName string) glue.FactoryBean {
 
 func (t *implBadgerStoreFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	bootstrapToken := t.Properties.GetString("application.boot", "")
 	if bootstrapToken == "" {
@@ -54,35 +54,35 @@ func (t *implBadgerStoreFactory) Object() (object interface{}, err error) {
 	if dataDir == "" {
 		dataDir = filepath.Join(t.Application.ApplicationDir(), "db")
 
-		if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+		if err := sprintutils.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 			return nil, err
 		}
 
 		dataDir = filepath.Join(dataDir, t.getNodeName())
 	}
 
-	if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+	if err := sprintutils.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 		return nil, err
 	}
 
 	dataDir = filepath.Join(dataDir, t.beanName)
-	if err := util.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
+	if err := sprintutils.CreateDirIfNeeded(dataDir, t.DataDirPerm); err != nil {
 		return nil, err
 	}
 
 	splitKeyValueDirs := t.Properties.GetBool(fmt.Sprintf("%s.split-key-value", t.beanName), false)
 	if splitKeyValueDirs {
 		keyDataDir := filepath.Join(dataDir, "key")
-		if err := util.CreateDirIfNeeded(keyDataDir, t.DataDirPerm); err != nil {
+		if err := sprintutils.CreateDirIfNeeded(keyDataDir, t.DataDirPerm); err != nil {
 			return nil, err
 		}
 		valueDataDir := filepath.Join(dataDir, "value")
-		if err := util.CreateDirIfNeeded(valueDataDir, t.DataDirPerm); err != nil {
+		if err := sprintutils.CreateDirIfNeeded(valueDataDir, t.DataDirPerm); err != nil {
 			return nil, err
 		}
 	}
 
-	storageKey, err := util.ParseToken(bootstrapToken)
+	storageKey, err := sprintutils.ParseToken(bootstrapToken)
 	if err != nil {
 		return nil, err
 	}
@@ -123,5 +123,5 @@ func (t *implBadgerStoreFactory) Singleton() bool {
 }
 
 func (t *implBadgerStoreFactory) getNodeName() string {
-	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
+	return sprintutils.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }

@@ -8,10 +8,10 @@ package cmd
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"strconv"
 	"strings"
 	"time"
@@ -87,7 +87,7 @@ func (t *implKeygenCommand) Run(args []string) (err error) {
 }
 
 func (t *implKeygenCommand) generateBootstrapToken(args []string) error {
-	if token, err := util.GenerateToken(); err == nil {
+	if token, err := sprintutils.GenerateToken(); err == nil {
 		println(token)
 		return nil
 	} else {
@@ -117,7 +117,7 @@ func (t *implKeygenCommand) generateAuthToken(args []string) error {
 		}
 	}
 
-	secret := util.PromptPassword("Enter JWT secret key: ")
+	secret := sprintutils.PromptPassword("Enter JWT secret key: ")
 	secretKey, err := base64.RawURLEncoding.DecodeString(secret)
 	if err != nil {
 		return err
@@ -140,7 +140,7 @@ func (t *implKeygenCommand) generateAuthToken(args []string) error {
 		ExpiresAt: time.Now().Unix() + ttlDays*24*3600,
 	}
 
-	token, err := util.GenerateAuthToken(secretKey, user)
+	token, err := sprintutils.GenerateAuthToken(secretKey, user)
 	if err != nil {
 		return err
 	}
@@ -163,13 +163,13 @@ func (t *implKeygenCommand) verifyAuthToken(args []string) error {
 		return errors.New("auth token not found")
 	}
 
-	secret := util.PromptPassword("Enter JWT secret key: ")
+	secret := sprintutils.PromptPassword("Enter JWT secret key: ")
 	secretKey, err := base64.RawURLEncoding.DecodeString(secret)
 	if err != nil {
 		return err
 	}
 
-	user, err := util.VerifyAuthToken(secretKey, authToken)
+	user, err := sprintutils.VerifyAuthToken(secretKey, authToken)
 	if err != nil {
 		errors.Errorf("verify error, %v", err)
 	}

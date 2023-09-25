@@ -8,10 +8,10 @@ package client
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
@@ -37,7 +37,7 @@ func GrpcClientFactory(beanName string) glue.FactoryBean {
 
 func (t *implGrpcClientFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	// try to get normal property
 	connectAddr := t.Properties.GetString(fmt.Sprintf("%s.connect-address", t.beanName), "")
@@ -51,7 +51,7 @@ func (t *implGrpcClientFactory) Object() (object interface{}, err error) {
 		connectAddr = t.getConnectFromBindAddress(grpcListenAddr)
 	}
 
-	tcpAddr, err := util.ParseAndAdjustTCPAddr(connectAddr, t.ApplicationFlags.Node())
+	tcpAddr, err := sprintutils.ParseAndAdjustTCPAddr(connectAddr, t.ApplicationFlags.Node())
 	if err != nil {
 		return
 	}

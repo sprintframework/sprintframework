@@ -9,13 +9,13 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
-	"github.com/sprintframework/sprintpb"
-	"github.com/sprintframework/sprintframework/pkg/server"
-	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
 	"github.com/keyvalstore/store"
+	"github.com/pkg/errors"
+	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/pkg/server"
+	"github.com/sprintframework/sprintframework/sprintutils"
+	"github.com/sprintframework/sprintpb"
 	"go.uber.org/zap"
 	"io"
 	"os"
@@ -55,7 +55,7 @@ func (t *implStorageService) PostConstruct() error {
 
 func (t *implStorageService) ExecuteQuery(name, query string, cb func(string) bool) (err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	s, ok := t.StoreMap[name]
 	if !ok {
@@ -207,7 +207,7 @@ func (t *implStorageService) LocalConsole(writer io.StringWriter, errWriter io.S
 	defaultStorage := "config-store"
 
 	for {
-		query := util.Prompt("Enter query [exit]: ")
+		query := sprintutils.Prompt("Enter query [exit]: ")
 		if query == "" {
 			continue
 		}
@@ -246,7 +246,7 @@ func (t *implStorageService) LocalConsole(writer io.StringWriter, errWriter io.S
 
 func (t *implStorageService) ExecuteCommand(cmd string, args []string) (answer string, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	start := time.Now()
 

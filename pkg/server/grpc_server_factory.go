@@ -10,7 +10,7 @@ import (
 	"github.com/codeallergy/glue"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"reflect"
@@ -31,7 +31,7 @@ func GrpcServerFactory(beanName string) glue.FactoryBean {
 
 func (t *implGrpcServerFactory) Object() (object interface{}, err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	listenAddr := t.Properties.GetString( fmt.Sprintf("%s.%s", t.beanName, "bind-address"), "")
 

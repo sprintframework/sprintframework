@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"github.com/sprintframework/sprintframework/pkg/server"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -102,7 +102,7 @@ func runServers(application sprint.Application, flags sprint.ApplicationFlags, c
 
 	return doWithServers(core, func(servers []sprint.Server) (err error) {
 
-		defer util.PanicToError(&err)
+		defer sprintutils.PanicToError(&err)
 		defer log.Sync()
 
 		if len(servers) == 0 {

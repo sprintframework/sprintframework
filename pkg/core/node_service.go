@@ -11,7 +11,7 @@ import (
 	"github.com/codeallergy/uuid"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/atomic"
 	"os"
 	"runtime"
@@ -80,11 +80,11 @@ func (t *implNodeService) GetStats(cb func(name, value string) bool) error {
 
 func (t *implNodeService) PostConstruct() (err error) {
 
-	defer util.PanicToError(&err)
+	defer sprintutils.PanicToError(&err)
 
 	t.nodeIdHex = t.Properties.GetString("node.id", "")
 	if t.nodeIdHex == "" {
-		t.nodeIdHex, err = util.GenerateNodeId()
+		t.nodeIdHex, err = sprintutils.GenerateNodeId()
 		if err != nil {
 			return errors.Errorf("generate node id, %v", err)
 		}
@@ -94,7 +94,7 @@ func (t *implNodeService) PostConstruct() (err error) {
 		}
 	}
 
-	t.nodeId, err = util.ParseNodeId(t.nodeIdHex)
+	t.nodeId, err = sprintutils.ParseNodeId(t.nodeIdHex)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (t *implNodeService) PostConstruct() (err error) {
 	t.nodeSeq = t.ApplicationFlags.Node()
 
 	if t.LocalNodeName == "" {
-		t.LocalNodeName = util.AppendNodeSequence(t.Application.Name(), t.nodeSeq)
+		t.LocalNodeName = sprintutils.AppendNodeSequence(t.Application.Name(), t.nodeSeq)
 	}
 
 	if t.LANNodeName == "" {
@@ -112,11 +112,11 @@ func (t *implNodeService) PostConstruct() (err error) {
 			return err
 		}
 
-		t.LANNodeName = util.AppendNodeName(t.LocalNodeName, hostname)
+		t.LANNodeName = sprintutils.AppendNodeName(t.LocalNodeName, hostname)
 	}
 
 	if t.WANNodeName == "" {
-		t.WANNodeName = util.AppendNodeName(t.LANNodeName, t.DataCenterName)
+		t.WANNodeName = sprintutils.AppendNodeName(t.LANNodeName, t.DataCenterName)
 	}
 
 	return nil

@@ -10,7 +10,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/util"
+	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"os"
@@ -77,7 +77,7 @@ func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 	}
 	pidFile := filepath.Join(runDir, fmt.Sprintf("%s.pid", t.getNodeName()))
 
-	if err := util.CreateDirIfNeeded(runDir, t.RunDirPerm); err != nil {
+	if err := sprintutils.CreateDirIfNeeded(runDir, t.RunDirPerm); err != nil {
 		return err
 	}
 
@@ -141,10 +141,10 @@ func (t *implStartNode) Start(logger *zap.Logger, restart bool) error {
 
 	if updateOnStart {
 		logger.Info("UpdateOnStart", zap.String("autoupdatePath", autoupdatePath))
-		if err := util.RemoveFileIfExist(nextExePath); err != nil {
+		if err := sprintutils.RemoveFileIfExist(nextExePath); err != nil {
 			logger.Error("UpdateFile", zap.String("nextExePath", nextExePath), zap.Error(err))
 		}
-		if cnt, err := util.CopyFile(autoupdatePath, nextExePath, t.ExeFilePerm); err != nil {
+		if cnt, err := sprintutils.CopyFile(autoupdatePath, nextExePath, t.ExeFilePerm); err != nil {
 			logger.Error("CopyFile", zap.String("from", autoupdatePath), zap.String("to", nextExePath), zap.Error(err))
 			nextExePath = autoupdatePath
 		} else {
@@ -202,7 +202,7 @@ func (t *implStartNode) executableNext(current string) string {
 }
 
 func (t *implStartNode) getNodeName() string {
-	return util.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
+	return sprintutils.AppendNodeSequence(t.Application.Name(), t.ApplicationFlags.Node())
 }
 
 func User() string {
