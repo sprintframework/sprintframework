@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-package cmd
+package sprintcmd
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

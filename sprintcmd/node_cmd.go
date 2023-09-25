@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-package cmd
+package sprintcmd
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/codeallergy/glue"
+	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
 	"strings"
 )
@@ -17,11 +17,11 @@ type implNodeCommand struct {
 	Context     glue.Context        `inject`
 	Application sprint.Application  `inject`
 
-	RunNode      *implRunNode         `inject`
-	StartNode    *implStartNode       `inject`
-	StopNode     *implStopNode        `inject`
-	RestartNode  *implRestartNode     `inject`
-	StatusNode   *implStatusNode      `inject`
+	RunNode      *implRunNode     `inject`
+	StartNode    *implStartNode   `inject`
+	StopNode     *implStopNode    `inject`
+	RestartNode  *implRestartNode `inject`
+	StatusNode   *implStatusNode  `inject`
 }
 
 func NodeCommand() sprint.Command {

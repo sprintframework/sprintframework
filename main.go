@@ -10,10 +10,10 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/sprintcore"
+	"github.com/sprintframework/sprintframework/sprintcmd"
 	"github.com/sprintframework/sprintframework/pkg/app"
 	"github.com/sprintframework/sprintframework/pkg/client"
-	"github.com/sprintframework/sprintframework/pkg/cmd"
+	"github.com/sprintframework/sprintframework/sprintcore"
 	"github.com/sprintframework/sprintframework/sprintserver"
 	"os"
 )
@@ -39,7 +39,7 @@ func doMain() (err error) {
 	}()
 
 	beans := []interface{} {
-		app.ApplicationScanner(app.DefaultResources, app.DefaultAssets, app.DefaultGzipAssets, cmd.DefaultCommands),
+		app.ApplicationScanner(app.DefaultResources, app.DefaultAssets, app.DefaultGzipAssets, sprintcmd.DefaultCommands),
 
 		glue.Child(sprint.CoreRole,
 			sprintcore.CoreScanner(),
