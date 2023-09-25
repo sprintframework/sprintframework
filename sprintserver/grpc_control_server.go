@@ -13,7 +13,7 @@ import (
 	"github.com/sprintframework/cert"
 	"github.com/sprintframework/nat"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/app"
+	"github.com/sprintframework/sprintframework/sprintapp"
 	"github.com/sprintframework/sprintframework/sprintutils"
 	"github.com/sprintframework/sprintpb"
 	"go.uber.org/zap"
@@ -232,7 +232,7 @@ func (t *implGrpcControlServer) configGet(args []string) (resp *sprintpb.Command
 		return nil, errors.Errorf("get config entry by key '%s', %v", key, err)
 	}
 
-	if app.IsHiddenProperty(key) {
+	if sprintapp.IsHiddenProperty(key) {
 		value = "******"
 	}
 
@@ -267,7 +267,7 @@ func (t *implGrpcControlServer) configDump(args []string) (resp *sprintpb.Comman
 	var out strings.Builder
 
 	err = t.ConfigRepository.EnumerateAll(prefix, func(key, value string) bool {
-		if app.IsHiddenProperty(key) {
+		if sprintapp.IsHiddenProperty(key) {
 			value = "******"
 		}
 		out.WriteString(key)
@@ -300,7 +300,7 @@ func (t *implGrpcControlServer) configList(args []string) (resp *sprintpb.Comman
 	var out strings.Builder
 
 	err = t.ConfigRepository.EnumerateAll(prefix, func(key, value string) bool {
-		if app.IsHiddenProperty(key) {
+		if sprintapp.IsHiddenProperty(key) {
 			value = "******"
 		}
 		if len(value) > limit {

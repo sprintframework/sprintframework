@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-package app
+package sprintapp
 
 import (
 	"flag"
@@ -240,11 +240,11 @@ func (t *application) Run(args []string) (err error) {
 	propertyFile := &glue.PropertySource{ Path: fmt.Sprintf("resources:%s.yml", t.applicationName) }
 	propertyMap := &glue.PropertySource{ Map: map[string]interface{} {
 		"application": map[string]interface{} {
-			"name": t.applicationName,
-			"version": t.applicationVersion,
-			"build": t.applicationBuild,
-			"profile": t.applicationProfile,
-			"perm": DefaultFileModes,
+			"name":       t.applicationName,
+			"version":    t.applicationVersion,
+			"build":      t.applicationBuild,
+			"profile":    t.applicationProfile,
+			"perm":       DefaultFileModes,
 			"autoupdate": false,
 		},
 	}}

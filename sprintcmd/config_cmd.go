@@ -10,7 +10,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/app"
+	"github.com/sprintframework/sprintframework/sprintapp"
 	"github.com/sprintframework/sprintframework/sprintutils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -117,13 +117,13 @@ func (t *implConfigCommand) setConfig(args []string) error {
 
 	var value string
 	if len(args) < 1 {
-		if app.IsPEMProperty(key) {
+		if sprintapp.IsPEMProperty(key) {
 			var err error
 			value, err = sprintutils.PromptPEM("Enter PEM key: ")
 			if err != nil {
 				return err
 			}
-		} else if app.IsPasswordProperty(key) {
+		} else if sprintapp.IsPasswordProperty(key) {
 			value = sprintutils.PromptPassword("Enter password: ")
 		} else {
 			value = sprintutils.Prompt("Enter value: ")

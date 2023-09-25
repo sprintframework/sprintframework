@@ -10,8 +10,8 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/sprintapp"
 	"github.com/sprintframework/sprintframework/sprintclient"
-	"github.com/sprintframework/sprintframework/pkg/app"
 	"github.com/sprintframework/sprintframework/sprintcmd"
 	"github.com/sprintframework/sprintframework/sprintcore"
 	"github.com/sprintframework/sprintframework/sprintserver"
@@ -39,7 +39,11 @@ func doMain() (err error) {
 	}()
 
 	beans := []interface{} {
-		app.ApplicationScanner(app.DefaultResources, app.DefaultAssets, app.DefaultGzipAssets, sprintcmd.DefaultCommands),
+		sprintapp.ApplicationScanner(
+			sprintapp.DefaultResources,
+			sprintapp.DefaultAssets,
+			sprintapp.DefaultGzipAssets,
+			sprintcmd.DefaultCommands),
 
 		glue.Child(sprint.CoreRole,
 			sprintcore.CoreScanner(),
@@ -52,7 +56,7 @@ func doMain() (err error) {
 				sprintserver.GrpcServerScanner("control-grpc-server"),
 				sprintserver.ControlServer(),
 				sprintserver.HttpServerFactory("control-gateway-server"),
-				//server.TlsConfigFactory("tls-config"),
+				//sprintserver.TlsConfigFactory("tls-config"),
 				sprintserver.TemplatePage("/", "resources:templates/index.tmpl"),
 				),
 
@@ -65,14 +69,14 @@ func doMain() (err error) {
 			sprintclient.ClientScanner(),
 			sprintclient.GrpcClientFactory("control-grpc-client"),
 			sprintclient.ControlClient(),
-			//client.AnyTlsConfigFactory("client-tls-config"),
+			//sprintclient.AnyTlsConfigFactory("client-tls-config"),
 			),
 	}
 
-	return app.Application("sprint",
-		app.WithVersion(Version),
-		app.WithBuild(Build),
-		app.WithBeans(beans)).
+	return sprintapp.Application("sprint",
+		sprintapp.WithVersion(Version),
+		sprintapp.WithBuild(Build),
+		sprintapp.WithBeans(beans)).
 		Run(os.Args[1:])
 
 }
