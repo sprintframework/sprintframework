@@ -10,9 +10,9 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/sprintcmd"
+	"github.com/sprintframework/sprintframework/sprintclient"
 	"github.com/sprintframework/sprintframework/pkg/app"
-	"github.com/sprintframework/sprintframework/pkg/client"
+	"github.com/sprintframework/sprintframework/sprintcmd"
 	"github.com/sprintframework/sprintframework/sprintcore"
 	"github.com/sprintframework/sprintframework/sprintserver"
 	"os"
@@ -62,9 +62,9 @@ func doMain() (err error) {
 				),
 			),
 		glue.Child(sprint.ControlClientRole,
-			client.ClientScanner(),
-			client.GrpcClientFactory("control-grpc-client"),
-			client.ControlClient(),
+			sprintclient.ClientScanner(),
+			sprintclient.GrpcClientFactory("control-grpc-client"),
+			sprintclient.ControlClient(),
 			//client.AnyTlsConfigFactory("client-tls-config"),
 			),
 	}
