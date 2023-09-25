@@ -10,10 +10,10 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
+	"github.com/sprintframework/sprintframework/sprintcore"
 	"github.com/sprintframework/sprintframework/pkg/app"
 	"github.com/sprintframework/sprintframework/pkg/client"
 	"github.com/sprintframework/sprintframework/pkg/cmd"
-	"github.com/sprintframework/sprintframework/pkg/core"
 	"github.com/sprintframework/sprintframework/sprintserver"
 	"os"
 )
@@ -42,11 +42,11 @@ func doMain() (err error) {
 		app.ApplicationScanner(app.DefaultResources, app.DefaultAssets, app.DefaultGzipAssets, cmd.DefaultCommands),
 
 		glue.Child(sprint.CoreRole,
-			core.CoreScanner(),
-			core.BoltStoreFactory("config-store"),
-			core.BadgerStoreFactory("secure-store"),
-			core.AutoupdateService(),
-			core.LumberjackFactory(),
+			sprintcore.CoreScanner(),
+			sprintcore.BoltStoreFactory("config-store"),
+			sprintcore.BadgerStoreFactory("secure-store"),
+			sprintcore.AutoupdateService(),
+			sprintcore.LumberjackFactory(),
 
 			glue.Child(sprint.ServerRole,
 				sprintserver.GrpcServerScanner("control-grpc-server"),
