@@ -14,7 +14,7 @@ import (
 	"github.com/sprintframework/sprintframework/pkg/client"
 	"github.com/sprintframework/sprintframework/pkg/cmd"
 	"github.com/sprintframework/sprintframework/pkg/core"
-	"github.com/sprintframework/sprintframework/pkg/server"
+	"github.com/sprintframework/sprintframework/sprintserver"
 	"os"
 )
 
@@ -49,16 +49,16 @@ func doMain() (err error) {
 			core.LumberjackFactory(),
 
 			glue.Child(sprint.ServerRole,
-				server.GrpcServerScanner("control-grpc-server"),
-				server.ControlServer(),
-				server.HttpServerFactory("control-gateway-server"),
+				sprintserver.GrpcServerScanner("control-grpc-server"),
+				sprintserver.ControlServer(),
+				sprintserver.HttpServerFactory("control-gateway-server"),
 				//server.TlsConfigFactory("tls-config"),
-				server.TemplatePage("/", "resources:templates/index.tmpl"),
+				sprintserver.TemplatePage("/", "resources:templates/index.tmpl"),
 				),
 
 			glue.Child(sprint.ServerRole,
-				server.HttpServerScanner("redirect-https"),
-				server.RedirectHttpsPage("redirect-https"),
+				sprintserver.HttpServerScanner("redirect-https"),
+				sprintserver.RedirectHttpsPage("redirect-https"),
 				),
 			),
 		glue.Child(sprint.ControlClientRole,

@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-package server
+package sprintserver
 
 import (
 	"github.com/codeallergy/glue"
 	"github.com/sprintframework/sprint"
-	"net/http"
 	"google.golang.org/grpc"
+	"net/http"
 )
 
 type serverScanner struct {

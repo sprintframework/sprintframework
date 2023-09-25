@@ -10,7 +10,7 @@ import (
 	"github.com/codeallergy/glue"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/server"
+	"github.com/sprintframework/sprintframework/sprintserver"
 	"github.com/sprintframework/sprintframework/sprintutils"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
@@ -71,7 +71,7 @@ func doWithServers(core glue.Context, cb func([]sprint.Server) error) (err error
 
 		for i, bean := range ctx.Bean(sprint.GrpcServerClass, glue.DefaultLevel) {
 			if srv, ok := bean.Object().(*grpc.Server); ok {
-				s := server.NewGrpcServer(bean.Name(), srv)
+				s := sprintserver.NewGrpcServer(bean.Name(), srv)
 				if err := ctx.Inject(s); err != nil {
 					return errors.Errorf("injection error for server '%s' of *grpc.Server on position %d in server context, %v", bean.Name(), i, err)
 				}
@@ -83,7 +83,7 @@ func doWithServers(core glue.Context, cb func([]sprint.Server) error) (err error
 
 		for i, bean := range ctx.Bean(sprint.HttpServerClass, glue.DefaultLevel) {
 			if srv, ok := bean.Object().(*http.Server); ok {
-				s := server.NewHttpServer(srv)
+				s := sprintserver.NewHttpServer(srv)
 				if err := ctx.Inject(s); err != nil {
 					return errors.Errorf("injection error for server '%s' of *http.Server on position %d in server context, %v", srv.Addr, i, err)
 				}

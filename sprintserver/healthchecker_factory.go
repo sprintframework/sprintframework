@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-package server
+package sprintserver
 
 import (
 	"github.com/codeallergy/glue"

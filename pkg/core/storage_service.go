@@ -13,7 +13,7 @@ import (
 	"github.com/keyvalstore/store"
 	"github.com/pkg/errors"
 	"github.com/sprintframework/sprint"
-	"github.com/sprintframework/sprintframework/pkg/server"
+	"github.com/sprintframework/sprintframework/sprintserver"
 	"github.com/sprintframework/sprintframework/sprintutils"
 	"github.com/sprintframework/sprintpb"
 	"go.uber.org/zap"
@@ -78,18 +78,18 @@ func (t *implStorageService) ExecuteQuery(name, query string, cb func(string) bo
 	switch cmd {
 	case "help":
 		if !cb("available commands: help, list, get, set, rm, dump, scan, search") {
-			return server.ErrInterrupted
+			return sprintserver.ErrInterrupted
 		}
 	case "list":
 		if !cb(strings.Join(t.availableStores, ", ")) {
-			return server.ErrInterrupted
+			return sprintserver.ErrInterrupted
 		}
 	case "get":
 		key := []byte(args)
 		if value, err := s.Get(context.Background()).ByRawKey(key).ToBinary(); err != nil {
 			return err
 		} else if !cb(base64.StdEncoding.EncodeToString(value)) {
-			return server.ErrInterrupted
+			return sprintserver.ErrInterrupted
 		}
 	case "set":
 		keyEnd := strings.IndexByte(args, ' ')
@@ -105,14 +105,14 @@ func (t *implStorageService) ExecuteQuery(name, query string, cb func(string) bo
 		if err := s.Set(context.Background()).ByRawKey([]byte(key)).Binary(valueBase64); err != nil {
 			return err
 		} else if !cb("OK") {
-			return server.ErrInterrupted
+			return sprintserver.ErrInterrupted
 		}
 	case "rm":
 		key := []byte(args)
 		if err := s.Remove(context.Background()).ByRawKey(key).Do(); err != nil {
 			return err
 		} else if !cb("OK") {
-			return server.ErrInterrupted
+			return sprintserver.ErrInterrupted
 		}
 	case "dump":
 		prefix := []byte(args)

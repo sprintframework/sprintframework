@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-package server_test
+package sprintserver_test
 
 import (
 	"bytes"
