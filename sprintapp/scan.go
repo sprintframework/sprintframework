@@ -44,7 +44,7 @@ var DefaultGzipAssets = &glue.ResourceSource{
 	AssetFiles: assetsgz.AssetFile(),
 }
 
-var DefaultApplicationBeans = []interface{} {
+var ApplicationBeans = []interface{} {
 	ApplicationFlags(100000), // override any property resolvers
 	FlagSetFactory(),
 	ResourceService(),

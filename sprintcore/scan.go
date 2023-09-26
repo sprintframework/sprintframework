@@ -5,7 +5,7 @@
 
 package sprintcore
 
-var DefaultCoreServices = []interface{} {
+var CoreServices = []interface{} {
 	ZapLogFactory(),
 	HCLogFactory(),
 	NodeService(),

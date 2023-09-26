@@ -5,7 +5,7 @@
 
 package sprintcmd
 
-var DefaultCommands = []interface{}{
+var ApplicationCommands = []interface{}{
 	VersionCommand(),
 	SetupCommand(),
 	HelpCommand(),

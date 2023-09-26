@@ -42,14 +42,18 @@ func doMain() (err error) {
 	glue.Verbose(log.Default())
 
 	beans := []interface{} {
-		sprintapp.DefaultApplicationBeans,
+		sprintapp.ApplicationBeans,
+		sprintcmd.ApplicationCommands,
+
+		/**
+		Those resources and assets are application specific
+		 */
 		sprintapp.DefaultResources,
 		sprintapp.DefaultAssets,
 		sprintapp.DefaultGzipAssets,
-		sprintcmd.DefaultCommands,
 
 		glue.Child(sprint.CoreRole,
-			sprintcore.DefaultCoreServices,
+			sprintcore.CoreServices,
 			sprintcore.BoltStoreFactory("config-store"),
 			sprintcore.BadgerStoreFactory("secure-store"),
 			sprintcore.AutoupdateService(),
