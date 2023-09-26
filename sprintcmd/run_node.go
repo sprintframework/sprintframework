@@ -25,7 +25,7 @@ type implRunNode struct {
 	SystemEnvironmentPropertyResolver sprint.SystemEnvironmentPropertyResolver `inject`
 	Context                           glue.Context                             `inject`
 	StartNode                         *implStartNode                           `inject`
-	Children                          []glue.ChildContext                      `inject:"level=1"`
+	Children                          []glue.ChildContext                      `inject`
 
 	LogDir         string        `value:"application.log.dir,default="`
 	LogDirPerm     os.FileMode   `value:"application.perm.log.dir,default=-rwxrwxr-x"`

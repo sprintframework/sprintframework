@@ -15,6 +15,7 @@ import (
 	"github.com/sprintframework/sprintframework/sprintcmd"
 	"github.com/sprintframework/sprintframework/sprintcore"
 	"github.com/sprintframework/sprintframework/sprintserver"
+	"log"
 	"os"
 )
 
@@ -38,15 +39,17 @@ func doMain() (err error) {
 		}
 	}()
 
+	glue.Verbose(log.Default())
+
 	beans := []interface{} {
-		sprintapp.ApplicationScanner(
-			sprintapp.DefaultResources,
-			sprintapp.DefaultAssets,
-			sprintapp.DefaultGzipAssets,
-			sprintcmd.DefaultCommands),
+		sprintapp.DefaultApplicationBeans,
+		sprintapp.DefaultResources,
+		sprintapp.DefaultAssets,
+		sprintapp.DefaultGzipAssets,
+		sprintcmd.DefaultCommands,
 
 		glue.Child(sprint.CoreRole,
-			sprintcore.CoreScanner(),
+			sprintcore.DefaultCoreServices,
 			sprintcore.BoltStoreFactory("config-store"),
 			sprintcore.BadgerStoreFactory("secure-store"),
 			sprintcore.AutoupdateService(),
@@ -66,9 +69,7 @@ func doMain() (err error) {
 				),
 			),
 		glue.Child(sprint.ControlClientRole,
-			sprintclient.ClientScanner(),
-			sprintclient.GrpcClientFactory("control-grpc-client"),
-			sprintclient.ControlClient(),
+			sprintclient.ControlClientBeans,
 			//sprintclient.AnyTlsConfigFactory("client-tls-config"),
 			),
 	}

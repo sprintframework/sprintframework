@@ -8,7 +8,7 @@ go 1.17
 
 require (
 	github.com/codeallergy/base62 v1.1.0
-	github.com/codeallergy/glue v1.1.1
+	github.com/codeallergy/glue v1.1.3
 	github.com/codeallergy/properties v1.1.0
 	github.com/codeallergy/uuid v1.1.0
 	github.com/fsnotify/fsnotify v1.6.0
@@ -23,7 +23,7 @@ require (
 	github.com/sprintframework/cert v1.0.0
 	github.com/sprintframework/dns v1.0.0 // indirect
 	github.com/sprintframework/nat v1.0.0
-	github.com/sprintframework/sprint v1.3.11
+	github.com/sprintframework/sprint v1.3.13
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.24.0

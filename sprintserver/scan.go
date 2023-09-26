@@ -12,28 +12,6 @@ import (
 	"net/http"
 )
 
-type serverScanner struct {
-	scan []interface{}
-}
-
-func ServerScanner(scan... interface{}) glue.Scanner {
-	return &serverScanner{
-		scan: scan,
-	}
-}
-
-func (t *serverScanner) Beans() []interface{} {
-	beans := []interface{}{
-		&struct {
-			// make them visible
-			Servers     []sprint.Server `inject:"optional"`
-			GrpcServers []*grpc.Server `inject:"optional"`
-			HttpServers []*http.Server `inject:"optional"`
-		}{},
-	}
-	return append(beans, t.scan...)
-}
-
 type grpcServerScanner struct {
 	beanName string
 	scan     []interface{}
@@ -53,8 +31,8 @@ func (t *grpcServerScanner) Beans() []interface{} {
 		&struct {
 			// make them visible
 			Servers     []sprint.Server `inject:"optional"`
-			GrpcServers []*grpc.Server `inject:"optional"`
-			HttpServers []*http.Server `inject:"optional"`
+			GrpcServers []*grpc.Server  `inject:"optional"`
+			HttpServers []*http.Server  `inject:"optional"`
 		}{},
 	}
 	return append(beans, t.scan...)
@@ -77,10 +55,10 @@ func (t *httpServerScanner) Beans() []interface{} {
 		HttpServerFactory(t.beanName),
 		&struct {
 			// make them visible
+			Servers     []sprint.Server `inject:"optional"`
 			HttpServers []*http.Server `inject`
 		}{},
 	}
 	return append(beans, t.scan...)
 }
-
 

@@ -44,27 +44,9 @@ var DefaultGzipAssets = &glue.ResourceSource{
 	AssetFiles: assetsgz.AssetFile(),
 }
 
-type applicationScanner struct {
-	scan []interface{}
-}
-
-func ApplicationScanner(scan... interface{}) glue.Scanner {
-	return &applicationScanner{
-		scan: scan,
-	}
-}
-
-func (t *applicationScanner) Beans() []interface{} {
-
-	beans := []interface{}{
-		ApplicationFlags(100000), // override any property resolvers
-		FlagSetFactory(),
-		ResourceService(),
-		&struct {
-			ChildContexts []glue.ChildContext `inject`
-		}{},
-	}
-
-	return append(beans, t.scan...)
+var DefaultApplicationBeans = []interface{} {
+	ApplicationFlags(100000), // override any property resolvers
+	FlagSetFactory(),
+	ResourceService(),
 }
 

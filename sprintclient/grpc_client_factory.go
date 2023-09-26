@@ -96,7 +96,7 @@ func (t *implGrpcClientFactory) doDial(connectAddr string) (*grpc.ClientConn, er
 
 	opts = append(opts, grpc.WithTransportCredentials(t.getTransportCreds()))
 
-	maxMessageSize := t.Properties.GetInt(fmt.Sprintf("%s.max.message.size", t.beanName), 0)
+	maxMessageSize := t.Properties.GetInt(fmt.Sprintf("%s.max-message-size", t.beanName), 0)
 	if maxMessageSize != 0 {
 		opts = append(opts, grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxMessageSize)))
 	}
