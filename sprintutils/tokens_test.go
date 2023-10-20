@@ -38,7 +38,7 @@ func TestShortId(t *testing.T) {
 }
 
 func TestShowId(t *testing.T) {
-	num, _ := sprintutils.DecodeId("s00001")
+	num, _ := sprintutils.DecodeId("p00001")
 	println(num)
 
 	println(sprintutils.EncodeId(num+1))

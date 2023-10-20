@@ -8,7 +8,7 @@ go 1.17
 
 require (
 	github.com/codeallergy/base62 v1.1.0
-	github.com/codeallergy/glue v1.1.3
+	github.com/codeallergy/glue v1.1.4
 	github.com/codeallergy/properties v1.1.0
 	github.com/codeallergy/uuid v1.1.0
 	github.com/fsnotify/fsnotify v1.6.0
