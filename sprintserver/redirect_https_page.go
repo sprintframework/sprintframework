@@ -22,7 +22,7 @@ type implRedirectHttpsPage struct {
 	redirectSuffix string
 }
 
-func RedirectHttpsPage(beanName string) sprint.Page {
+func RedirectHttpsPage(beanName string) sprint.Router {
 	return &implRedirectHttpsPage{
 		beanName: beanName,
 	}

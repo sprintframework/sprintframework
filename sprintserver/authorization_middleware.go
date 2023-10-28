@@ -124,13 +124,17 @@ func (t *implAuthorizationMiddleware) doAuthenticate(ctx context.Context) (*spri
 	}
 
 	auth := authHeaders[0]
+	return t.AuthenticateByHeader(auth)
+}
+
+func (t *implAuthorizationMiddleware) AuthenticateByHeader(authHeader string) (*sprint.AuthorizedUser, bool) {
 
 	const prefix = "Bearer "
-	if !strings.HasPrefix(auth, prefix) {
+	if !strings.HasPrefix(authHeader, prefix) {
 		return nil, false
 	}
 
-	token := strings.TrimSpace(strings.TrimPrefix(auth, prefix))
+	token := strings.TrimSpace(strings.TrimPrefix(authHeader, prefix))
 	if token == "" {
 		return nil, false
 	}

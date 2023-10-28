@@ -24,7 +24,7 @@ type implTemplatePage struct {
 	ResourceService sprint.ResourceService `inject`
 }
 
-func TemplatePage(pattern, templateFile string) sprint.Page {
+func TemplatePage(pattern, templateFile string) sprint.Router {
 	return &implTemplatePage{
 		pattern: pattern,
 		templateFile: templateFile,

@@ -27,7 +27,7 @@ type implHttpServerFactory struct {
 	Log              *zap.Logger `inject`
 
 	Properties       glue.Properties                   `inject`
-	Pages            []sprint.Page                     `inject:"optional,level=1"`
+	Pages            []sprint.Router                   `inject:"optional,level=1"`
 	Resources        []*glue.ResourceSource            `inject:"optional"`
 	AutocertManager  *autocert.Manager                 `inject:"optional"`
 	TlsConfig        *tls.Config                       `inject:"optional"`
