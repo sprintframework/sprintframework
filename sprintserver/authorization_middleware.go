@@ -20,17 +20,17 @@ import (
 	"time"
 )
 
-type userMetadataKey struct{}
+type authorizedUserKey struct{}
 
 type implAuthorizationMiddleware struct {
-	Application      sprint.Application       `inject`
-	Properties       glue.Properties          `inject`
-	ConfigRepository sprint.ConfigRepository  `inject`
-	Log              *zap.Logger              `inject`
+	Application      sprint.Application      `inject`
+	Properties       glue.Properties         `inject`
+	ConfigRepository sprint.ConfigRepository `inject`
+	Log              *zap.Logger             `inject`
 
-	invalidTokens     sync.Map   // key is string, value is true
+	invalidTokens sync.Map // key is string, value is true
 
-	secretKey []byte   // JWT tokens secret key
+	secretKey []byte // JWT tokens secret key
 }
 
 func AuthorizationMiddleware() sprint.AuthorizationMiddleware {
@@ -77,9 +77,9 @@ func (t *implAuthorizationMiddleware) generateDefaultAuthToken(secret string) (s
 	}
 
 	u := &sprint.AuthorizedUser{
-		Username:  user.Username,
-		Roles:     map[string]bool {
-			"USER": true,
+		Username: user.Username,
+		Roles: map[string]bool{
+			"USER":  true,
 			"ADMIN": true,
 		},
 		Context:   make(map[string]string),
@@ -103,7 +103,7 @@ func (t *implAuthorizationMiddleware) Authenticate(ctx context.Context) (outCtx 
 		}
 	}
 
-	return context.WithValue(ctx, userMetadataKey{}, user), nil
+	return context.WithValue(ctx, authorizedUserKey{}, user), nil
 
 }
 
@@ -148,8 +148,8 @@ func (t *implAuthorizationMiddleware) doAuthenticate(ctx context.Context) (*spri
 }
 
 func (t *implAuthorizationMiddleware) GetUser(ctx context.Context) (*sprint.AuthorizedUser, bool) {
-	userMetadata := ctx.Value(userMetadataKey{})
-	if user, ok := userMetadata.( *sprint.AuthorizedUser); ok {
+	userMetadata := ctx.Value(authorizedUserKey{})
+	if user, ok := userMetadata.(*sprint.AuthorizedUser); ok {
 		if user.Username == "" && user.ExpiresAt == 0 {
 			return nil, false
 		} else {
@@ -189,4 +189,3 @@ func (t *implAuthorizationMiddleware) ParseToken(token string) (*sprint.Authoriz
 func (t *implAuthorizationMiddleware) InvalidateToken(token string) {
 	t.invalidTokens.Store(token, true)
 }
-
