@@ -16,14 +16,14 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2
 	github.com/hashicorp/go-hclog v1.5.0
-	github.com/keyvalstore/badgerstore v1.3.0
-	github.com/keyvalstore/store v1.3.0
+	github.com/keyvalstore/badgerstore v1.3.1
+	github.com/keyvalstore/store v1.3.1
 	github.com/mailgun/mailgun-go/v4 v4.8.1
 	github.com/pkg/errors v0.9.1
 	github.com/sprintframework/cert v1.0.0
 	github.com/sprintframework/dns v1.0.0 // indirect
 	github.com/sprintframework/nat v1.0.0
-	github.com/sprintframework/sprint v1.4.0
+	github.com/sprintframework/sprint v1.4.1
 	github.com/stretchr/testify v1.8.4
 	go.uber.org/atomic v1.10.0
 	go.uber.org/zap v1.24.0
@@ -37,9 +37,9 @@ require (
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/keyvalstore/bboltstore v1.3.0
-	github.com/keyvalstore/boltstore v1.3.0
-	github.com/keyvalstore/cachestore v1.3.0
+	github.com/keyvalstore/bboltstore v1.3.1
+	github.com/keyvalstore/boltstore v1.3.1
+	github.com/keyvalstore/cachestore v1.3.1
 	github.com/sprintframework/sprintpb v1.3.0
 )
 
